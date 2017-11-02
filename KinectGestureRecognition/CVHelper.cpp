@@ -1,7 +1,10 @@
 #include "CVHelper.h"
 #include "utils.h"
+#include <string>
+#include <cstdio>
 #include <opencv2\opencv.hpp>
 using namespace cv;
+using namespace std;
 
 CVHelper::CVHelper()
 {
@@ -38,21 +41,31 @@ void CVHelper::draw(UINT16 * depthData, Hand * rightHand)
 		{
 			for (int j = 0; j < cDepthWidth; j++)
 			{
-				if (rightHand->m_pHandAreaArray[i][j])
+				if (rightHand->m_pHandLineArray[i][j])
 				{
-					imgData[j++] = 255;
-					imgData[j++] = 255;
-					imgData[j++] = 255;
+					imgData[k++] = 255;
+					imgData[k++] = 255;
+					imgData[k++] = 255;
 				}
 				else{
-					imgData[j++] = 0;
-					imgData[j++] = 0;
-					imgData[j++] = 0;
+					imgData[k++] = 0;
+					imgData[k++] = 0;
+					imgData[k++] = 0;
 				}
 			}
 		}
 		CvScalar color = cvScalar(0, 255, 0);
 		circle(m_image, cvPoint(rightHand->HandCenter.m_depthX, rightHand->HandCenter.m_depthY), 5, color, -1);
+		stringstream ss;
+		ss << "(";
+		ss << rightHand->HandCenter.m_depthX;
+		ss << ",";
+		ss << rightHand->HandCenter.m_depthY;
+		ss << ",";
+		ss << rightHand->HandCenter.m_cameraZ;
+		ss << ")";
+		string msg = ss.str();
+		putText(m_image, msg, cvPoint(rightHand->HandCenter.m_depthX, rightHand->HandCenter.m_depthY), 1,1,color);
 	}
 }
 

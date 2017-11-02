@@ -9,7 +9,10 @@ class Hand
 public:
 	Hand();
 	~Hand();
-	void refreshHandCenter(ICoordinateMapper * mapper, CameraSpacePoint point, UINT16 * depthArray);
+	void initHandArray();
+
+	void refreshHandData(ICoordinateMapper * mapper, CameraSpacePoint point, UINT16 * depthArray);
+	//void refreshHandAreaArray();
 	HandPoint HandCenter;
 
 	HandPoint m_leftTopHandPoint;
@@ -18,13 +21,15 @@ public:
 	bool m_pHandAreaArray[cDepthHeight][cDepthWidth];
 	bool m_pHandLineArray[cDepthHeight][cDepthWidth];
 
+
 	vector < HandPoint* > HandOutline;
 private:
-	void calculateXYOffset();
-	float getCameraZFromDepthXY(ICoordinateMapper * mapper, int x, int y, UINT16 DepthZ);
 
-	int m_nXOffsetFromCenter;
-	int m_nYOffsetFromCenter;
+	bool checkIsOutline(int x, int y);
+	UINT16 conventArray(int x, int y);
+	CameraSpacePoint m_points[cDepthHeight * cDepthWidth];
+	void calculateHandRect();
+	float getCameraZFromDepthXY(ICoordinateMapper * mapper, int x, int y, UINT16 DepthZ);
 
 };
 
