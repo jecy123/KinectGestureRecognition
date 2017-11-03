@@ -14,6 +14,7 @@ public:
 	void drawPoint(HandPoint point, Scalar color = cvScalar(0, 255,0),int radius = 5);
 	void show();
 	int getKeyPressed();
+	void setCursor(int x, int y);
 private:
 	Mat m_image;
 	int m_nPressedKey;

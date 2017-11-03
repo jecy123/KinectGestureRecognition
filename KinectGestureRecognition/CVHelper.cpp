@@ -16,6 +16,10 @@ CVHelper::~CVHelper()
 {
 }
 
+void CVHelper::setCursor(int x, int y)
+{
+	SetCursorPos(x * 5, y * 5);
+}
 
 void CVHelper::drawPoint(HandPoint point, Scalar color, int radius)
 {
@@ -64,6 +68,8 @@ void CVHelper::draw(UINT16 * depthData, Hand * rightHand)
 		//circle(m_image, cvPoint(rightHand->HandCenter.m_depthX, rightHand->HandCenter.m_depthY), 5, color, -1);
 		drawPoint(rightHand->HandCenter);
 		drawPoint(rightHand->FingePoint, cvScalar(255, 255, 0));
+		
+		setCursor(rightHand->FingePoint.m_depthX, rightHand->FingePoint.m_depthY);
 
 		gotoXY(0, 2);
 		/*cout << rightHand->HandOutline.size() << endl;
