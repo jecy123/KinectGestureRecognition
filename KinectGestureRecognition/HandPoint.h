@@ -9,7 +9,8 @@ public:
 	~HandPoint();
 	void setFingerPoint(bool isFingerPoint);
 	bool isFingerPoint();
-	static float disBtw2Points(HandPoint p1, HandPoint p2);
+	static float disBtw2Points(HandPoint & p1, HandPoint & p2);
+	static float disBtw2Points(int x1, int y1, int x2, int y2);
 	static HandPoint & getHandPoint(ICoordinateMapper * mapper, CameraSpacePoint jointPoint);
 
 	bool m_isFingerPoint;

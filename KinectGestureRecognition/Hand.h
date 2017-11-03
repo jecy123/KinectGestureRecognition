@@ -14,6 +14,9 @@ public:
 	void refreshHandData(ICoordinateMapper * mapper, CameraSpacePoint point, UINT16 * depthArray);
 	//void refreshHandAreaArray();
 	HandPoint HandCenter;
+	HandPoint FingePoint;
+
+	double maxDis;
 
 	HandPoint m_leftTopHandPoint;
 	HandPoint m_rightBottomHandPoint;

@@ -4,6 +4,7 @@
 Hand::Hand()
 {
 	initHandArray();
+	maxDis = 0;
 }
 
 
@@ -22,6 +23,8 @@ void Hand::initHandArray()
 void Hand::refreshHandData(ICoordinateMapper * mapper, CameraSpacePoint point, UINT16 * depthArray)
 {
 	initHandArray();
+	maxDis = 0;
+
 	this->HandCenter = HandPoint::getHandPoint(mapper, point);
 
 	//mapper->MapDepthFrameToCameraSpace(cDepthHeight * cDepthWidth, depthArray, cDepthHeight*cDepthWidth, m_points);
@@ -50,6 +53,16 @@ void Hand::refreshHandData(ICoordinateMapper * mapper, CameraSpacePoint point, U
 		for (int j = 0; j < cDepthWidth; j++)
 		{
 			m_pHandLineArray[i][j] = checkIsOutline(j, i);
+			if (m_pHandLineArray[i][j])
+			{
+				float dis = HandPoint::disBtw2Points(j, i, HandCenter.m_depthX, HandCenter.m_depthY);
+				if (maxDis < dis)
+				{
+					maxDis = dis;
+					FingePoint.m_depthX = j;
+					FingePoint.m_depthY = i;
+				}
+			}
 		}
 	}
 

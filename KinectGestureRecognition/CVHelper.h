@@ -11,6 +11,7 @@ public:
 	CVHelper();
 	~CVHelper();
 	void draw(UINT16 * depthData, Hand * rightHand);
+	void drawPoint(HandPoint point, Scalar color = cvScalar(0, 255,0));
 	void show();
 	int getKeyPressed();
 private:

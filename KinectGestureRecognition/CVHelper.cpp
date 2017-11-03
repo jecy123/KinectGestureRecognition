@@ -16,6 +16,12 @@ CVHelper::~CVHelper()
 {
 }
 
+
+void CVHelper::drawPoint(HandPoint point, Scalar color)
+{
+	circle(m_image, cvPoint(point.m_depthX, point.m_depthY), 5, color, -1);
+}
+
 void CVHelper::draw(UINT16 * depthData, Hand * rightHand)
 {
 	m_image.setTo(0);
@@ -55,7 +61,9 @@ void CVHelper::draw(UINT16 * depthData, Hand * rightHand)
 			}
 		}
 		CvScalar color = cvScalar(0, 255, 0);
-		circle(m_image, cvPoint(rightHand->HandCenter.m_depthX, rightHand->HandCenter.m_depthY), 5, color, -1);
+		//circle(m_image, cvPoint(rightHand->HandCenter.m_depthX, rightHand->HandCenter.m_depthY), 5, color, -1);
+		drawPoint(rightHand->HandCenter);
+		drawPoint(rightHand->FingePoint, cvScalar(255, 255, 0));
 		stringstream ss;
 		ss << "(";
 		ss << rightHand->HandCenter.m_depthX;

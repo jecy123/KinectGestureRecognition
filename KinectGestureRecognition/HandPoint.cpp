@@ -28,12 +28,16 @@ bool HandPoint::isFingerPoint()
 
 //静态方法：
 //计算两个手掌指尖点之间的距离值
-float HandPoint::disBtw2Points(HandPoint p1, HandPoint p2)
+float HandPoint::disBtw2Points(int x1, int y1, int x2, int y2)
 {
-	float dis2 = (p1.m_depthX - p2.m_depthX) * (p1.m_depthX - p2.m_depthX)
-		+ (p1.m_depthY - p2.m_depthY) * (p1.m_depthY - p2.m_depthY);
+	float dis2 = (x1 - x2) * (x1 - x2) + (y1 - y2) * (y1 - y2);
 	float distance = sqrt(dis2);
 	return distance;
+}
+
+float HandPoint::disBtw2Points(HandPoint & p1, HandPoint &  p2)
+{
+	return disBtw2Points(p1.m_depthX, p1.m_depthY, p2.m_depthX, p2.m_depthY);
 }
 
 //静态方法：
