@@ -1,5 +1,5 @@
 #pragma once
-
+#include <Windows.h>
 
 static const int cDepthWidth = 512;
 static const int cDepthHeight = 424;
@@ -15,4 +15,13 @@ inline void SafeRealease(Interface * & pInterfaceToRelease)
 		pInterfaceToRelease = nullptr;
 	}
 };
+
+inline void gotoXY(int x, int y)
+{
+	COORD coord;
+	coord.X = x;
+	coord.Y = y;
+	HANDLE h = GetStdHandle(STD_OUTPUT_HANDLE);
+	SetConsoleCursorPosition(h, coord);
+}
 

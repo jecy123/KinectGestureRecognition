@@ -33,6 +33,9 @@
     <ClCompile Include="HandPoint.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
+    <ClCompile Include="GestureRecgnition.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Hand.h">
@@ -48,6 +51,9 @@
       <Filter>头文件</Filter>
     </ClInclude>
     <ClInclude Include="HandPoint.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="GestureRecgnition.h">
       <Filter>头文件</Filter>
     </ClInclude>
   </ItemGroup>
