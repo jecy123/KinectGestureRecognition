@@ -8,6 +8,11 @@ HandPoint::HandPoint()
 	m_cameraZ = 0;
 }
 
+
+HandPoint::HandPoint(int x, int y, float z, float dis) : m_depthX(x), m_depthY(y), m_cameraZ(z), m_disFromCenter(dis)
+{
+}
+
 HandPoint::HandPoint(int x, int y, float z) :m_depthX(x), m_depthY(y), m_cameraZ(z)
 {
 }

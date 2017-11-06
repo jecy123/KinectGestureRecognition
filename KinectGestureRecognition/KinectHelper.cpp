@@ -88,7 +88,7 @@ HRESULT KinectHelper::UpdateBodyData()
 						//cout << i << endl;
 						Joint joints[JointType_Count];
 						pBody[i]->GetJoints(JointType_Count, joints);
-						m_pRightHand->refreshHandData(m_pCoordinateMapper, joints[JointType_HandRight].Position, m_pDepthArray);
+						m_pRightHand->refreshHandData(m_pCoordinateMapper, joints[JointType_HandRight].Position, joints[JointType_WristRight].Position,  m_pDepthArray);
 					}
 				}
 			}

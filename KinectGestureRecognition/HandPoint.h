@@ -5,6 +5,7 @@ class HandPoint
 {
 public:
 	HandPoint(int x, int y, float z);
+	HandPoint(int x, int y, float z, float dis);
 	HandPoint();
 	~HandPoint();
 	void setFingerPoint(bool isFingerPoint);
@@ -16,5 +17,6 @@ public:
 	bool m_isFingerPoint;
 	float m_cameraZ;
 	int m_depthX, m_depthY;
+	float m_disFromCenter;
 };
 

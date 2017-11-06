@@ -25,3 +25,4 @@ inline void gotoXY(int x, int y)
 	SetConsoleCursorPosition(h, coord);
 }
 
+

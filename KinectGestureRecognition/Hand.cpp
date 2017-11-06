@@ -1,5 +1,12 @@
 #include "Hand.h"
+#include <algorithm>
 
+
+
+inline bool cmp(HandPoint p1, HandPoint p2)
+{
+	return p1.m_disFromCenter < p2.m_disFromCenter;
+}
 
 Hand::Hand()
 {
@@ -16,22 +23,43 @@ void Hand::initHandArray()
 		for (int j = 0; j < cDepthWidth; j++)
 		{
 			m_pHandAreaArray[i][j] = false;
-			m_pHandLineArray[i][j] = false;
+			m_pHandLineArray[i][j] = false; 
+			m_pHandOutLineArray[i][j] = false;
 		}
 	}
 }
 
-void Hand::refreshHandData(ICoordinateMapper * mapper, CameraSpacePoint point, UINT16 * depthArray)
+void Hand::initFingerArray()
+{
+	for (int i = 0; i < MAX_FINGERCNT; i++)
+	{
+		m_pMax5FingerPoint[i].m_depthX = 0;
+		m_pMax5FingerPoint[i].m_depthY = 0;
+		m_pMax5FingerPoint[i].m_cameraZ = 0;
+		m_pMax5FingerPoint[i].m_disFromCenter = 0.0;
+	}
+
+	for (int i = 0; i < MAX_IN_FINGER; i++)
+	{
+		m_pMin4FingerPoint[i].m_depthX = 0;
+		m_pMin4FingerPoint[i].m_depthY = 0;
+		m_pMin4FingerPoint[i].m_cameraZ = 0;
+		m_pMin4FingerPoint[i].m_disFromCenter = FLT_MAX;
+	}
+}
+
+void Hand::refreshHandData(ICoordinateMapper * mapper, CameraSpacePoint pointCenter, CameraSpacePoint pointWrist,UINT16 * depthArray)
 {
 	initHandArray();
+	initFingerArray();
 	maxDis = 0;
 
-	this->HandCenter = HandPoint::getHandPoint(mapper, point);
+	this->HandCenter = HandPoint::getHandPoint(mapper, pointCenter);
+	this->HandWrist = HandPoint::getHandPoint(mapper, pointWrist);
 
 	//mapper->MapDepthFrameToCameraSpace(cDepthHeight * cDepthWidth, depthArray, cDepthHeight*cDepthWidth, m_points);
 
 	calculateHandRect();
-
 
 	for (int i = m_leftTopHandPoint.m_depthY; i <= m_rightBottomHandPoint.m_depthY; i++)
 	{
@@ -49,25 +77,47 @@ void Hand::refreshHandData(ICoordinateMapper * mapper, CameraSpacePoint point, U
 		}
 	}
 
-	for (int i = 0; i < cDepthHeight; i++)
+
+	for (int i = m_leftTopHandPoint.m_depthY; i <= m_rightBottomHandPoint.m_depthY; i++)
 	{
-		for (int j = 0; j < cDepthWidth; j++)
+		for (int j = m_leftTopHandPoint.m_depthX; j <= m_rightBottomHandPoint.m_depthX; j++)
 		{
 			m_pHandLineArray[i][j] = checkIsOutline(j, i);
-			if (m_pHandLineArray[i][j]&& i <= HandCenter.m_depthY && j <= HandCenter.m_depthX)
+			/*if (m_pHandLineArray[i][j] && i <= HandCenter.m_depthY && j <= HandCenter.m_depthX)
 			{
 				float dis = HandPoint::disBtw2Points(j, i, HandCenter.m_depthX, HandCenter.m_depthY);
-				if (maxDis < dis)
+				float z = getCameraZFromDepthXY(mapper, j, i, depthArray[i * cDepthWidth + j]);
+				HandPoint  p(j, i, z, dis);
+				if (m_pMax5FingerPoint[0].m_disFromCenter < dis)
 				{
-					maxDis = dis;
-					FingePoint.m_depthX = j;
-					FingePoint.m_depthY = i;
+					m_pMax5FingerPoint[4] = m_pMax5FingerPoint[3];
+					m_pMax5FingerPoint[3] = m_pMax5FingerPoint[2];
+					m_pMax5FingerPoint[2] = m_pMax5FingerPoint[1];
+					m_pMax5FingerPoint[1] = m_pMax5FingerPoint[0];
+
+					m_pMax5FingerPoint[0].m_cameraZ = z;
+					m_pMax5FingerPoint[0].m_depthX = j;
+					m_pMax5FingerPoint[0].m_depthY = i;
+					m_pMax5FingerPoint[0].m_disFromCenter = dis;
 				}
-			}
+			}*/
+
+
 		}
 	}
 
-	//checkFingerPoint(mapper, depthArray);
+
+	
+	for (int i = m_leftTopHandPoint.m_depthY + 1; i <= m_rightBottomHandPoint.m_depthY - 1; i++)
+	{
+		for (int j = m_leftTopHandPoint.m_depthX + 1; j <= m_rightBottomHandPoint.m_depthX - 1; j++)
+		{
+			m_pHandLineArray[i][j] = dealWithOutline(j, i);
+		}
+	}
+
+
+	// checkFingerPoint(mapper, depthArray);
 }
 
 
@@ -93,13 +143,63 @@ Hand::~Hand()
 }
 
 
-UINT16 Hand::conventArray(int x, int y)
+UINT16 Hand::conventArray(int x, int y, checkType type)
 {
-	if (m_pHandAreaArray[y][x])
+	bool(*array)[cDepthHeight][cDepthWidth];
+	if (type == TYPE_HAND_AREA)
+	{
+		array = &m_pHandAreaArray;
+	}
+	else{
+		array = &m_pHandLineArray;
+	}
+	if ((*array)[y][x])
 	{
 		return 0x1;
 	}
 	return 0x0;
+}
+
+
+bool Hand::dealWithOutline(int x, int y)
+{
+	if (m_pHandLineArray[y][x])
+	{
+		UINT16 handCheck = 0x0000 |
+			conventArray(x, y, TYPE_HAND_OUTLINE) << 8 |
+			conventArray(x - 1, y - 1, TYPE_HAND_OUTLINE) << 7 |
+			conventArray(x - 1, y, TYPE_HAND_OUTLINE) << 6 |
+			conventArray(x - 1, y + 1, TYPE_HAND_OUTLINE) << 5 |
+			conventArray(x, y + 1, TYPE_HAND_OUTLINE) << 4 |
+			conventArray(x + 1, y + 1, TYPE_HAND_OUTLINE) << 3 |
+			conventArray(x + 1, y, TYPE_HAND_OUTLINE) << 2 |
+			conventArray(x + 1, y - 1, TYPE_HAND_OUTLINE) << 1 |
+			conventArray(x, y - 1, TYPE_HAND_OUTLINE);
+		//È¥³ýÖ±½Çµã
+		if (handCheck & 0x0141 == 0x0141 
+			|| handCheck & 0x0101 == 0x0101 
+			|| handCheck & 0x0150 == 0x0150 
+			|| handCheck & 0x0114 == 0x0114)
+		{
+			return false;
+		}
+
+		int cnt = 0;
+		for (int i = 0; i <= 8; i++)
+		{
+			if ((handCheck >> i) & 0x0001 == 0x0001)
+			{
+				cnt++;
+			}
+		}
+		if (cnt == 3)
+		{
+			return true;
+		}
+		return false;
+	}
+	
+	return false;
 }
 
 bool Hand::checkIsOutline(int x, int y)
@@ -108,7 +208,7 @@ bool Hand::checkIsOutline(int x, int y)
 	{
 		return false;
 	}
-	UINT16 handCheck = 0x0000 |
+	/*UINT16 handCheck = 0x0000 |
 		conventArray(x, y) << 8 |
 		conventArray(x - 1, y - 1) << 7 |
 		conventArray(x - 1, y) << 6 |
@@ -118,8 +218,16 @@ bool Hand::checkIsOutline(int x, int y)
 		conventArray(x + 1, y) << 2 |
 		conventArray(x + 1, y - 1) << 1 |
 		conventArray(x, y - 1);
+*/
+	UCHAR handCheck = 0x00 |
+		conventArray(x, y) << 4 |
+		conventArray(x - 1, y) << 3 |
+		conventArray(x + 1, y) << 2 |
+		conventArray(x, y - 1) << 1 |
+		conventArray(x, y + 1);
 
-	if (handCheck == 0x01ff || handCheck == 0x0000)
+
+	if (handCheck == 0x1f || handCheck == 0x00)
 	{
 		return false;
 	}
@@ -149,7 +257,7 @@ void Hand::calculateHandRect()
 	m_leftTopHandPoint.m_depthY = max(HandCenter.m_depthY - YOffsetFromCenter, 0);
 
 	m_rightBottomHandPoint.m_depthX = min(HandCenter.m_depthX + XOffsetFromCenter, cDepthWidth - 1);
-	m_rightBottomHandPoint.m_depthY = min(HandCenter.m_depthY + XOffsetFromCenter, cDepthHeight - 1);
+	m_rightBottomHandPoint.m_depthY = min(HandCenter.m_depthY + YOffsetFromCenter, cDepthHeight - 1);
 }
 
 
@@ -271,7 +379,7 @@ void Hand::findNextXY(const int & oldX, const int & oldY, int & newX, int & newY
 	
 	while (true)
 	{
-		if (!m_visited[startY][startX] && m_pHandLineArray[startY][startX])
+		if (!m_visited[startY][startX] && m_pHandOutLineArray[startY][startX])
 		{
 			m_visited[startY][startX] = true;
 			break;
@@ -303,7 +411,7 @@ void Hand::findNextXY(const int & oldX, const int & oldY, int & newX, int & newY
 		}
 	}
 
-	if (m_pHandLineArray[startY][startX])
+	if (m_pHandOutLineArray[startY][startX])
 	{
 		newX = startX;
 		newY = startY;
