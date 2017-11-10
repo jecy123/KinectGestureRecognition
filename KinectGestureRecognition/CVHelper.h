@@ -1,9 +1,6 @@
 #pragma once
-#include <Kinect.h>
-#include <opencv2\opencv.hpp>
+#include "utils.h"
 #include "Hand.h"
-
-using namespace cv;
 
 class CVHelper
 {
@@ -12,6 +9,7 @@ public:
 	~CVHelper();
 	void draw(UINT16 * depthData, Hand * rightHand);
 	void drawPoint(HandPoint point, Scalar color = cvScalar(0, 255,0),int radius = 5);
+	void drawLine(HandPoint p1, HandPoint p2, Scalar color = cvScalar(255, 0, 255));
 	void show();
 	int getKeyPressed();
 	void setCursor(int x, int y);

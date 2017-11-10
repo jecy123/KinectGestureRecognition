@@ -155,6 +155,7 @@
     <ClCompile Include="KinectHelper.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="utils.cpp" />
+    <ClCompile Include="Vector.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="CVHelper.h" />
@@ -163,6 +164,7 @@
     <ClInclude Include="HandPoint.h" />
     <ClInclude Include="KinectHelper.h" />
     <ClInclude Include="utils.h" />
+    <ClInclude Include="Vector.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="ClassDiagram.cd" />

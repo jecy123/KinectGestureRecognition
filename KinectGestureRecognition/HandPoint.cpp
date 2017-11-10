@@ -1,5 +1,5 @@
 #include "HandPoint.h"
-#include <cmath>
+#include "utils.h"
 
 HandPoint::HandPoint()
 {
@@ -12,6 +12,7 @@ HandPoint::HandPoint()
 HandPoint::HandPoint(int x, int y, float z, float dis) : m_depthX(x), m_depthY(y), m_cameraZ(z), m_disFromCenter(dis)
 {
 }
+
 
 HandPoint::HandPoint(int x, int y, float z) :m_depthX(x), m_depthY(y), m_cameraZ(z)
 {
@@ -59,3 +60,5 @@ HandPoint & HandPoint::getHandPoint(ICoordinateMapper * mapper, CameraSpacePoint
 	HandPoint handpoint(depthX, depthY, cameraZ);
 	return handpoint;
 }
+
+

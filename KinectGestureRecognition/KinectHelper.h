@@ -1,7 +1,8 @@
 #pragma once
-#include <Kinect.h>
+#include "utils.h"
 #include "Hand.h"
 #include "CVHelper.h"
+#include "GestureRecgnition.h"
 
 class KinectHelper
 {
@@ -28,6 +29,8 @@ private:
 	UINT16 *				m_pDepthArray;
 	Hand *					m_pRightHand;
 	CVHelper *				m_pCVHelper;
+	GestureRecgnition *		m_pGestureRecgnition;
+
 protected:
 	virtual void onInit(){};
 	virtual void onDepthDataArrived(){};

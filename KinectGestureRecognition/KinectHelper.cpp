@@ -1,10 +1,5 @@
 #include "KinectHelper.h"
 #include "utils.h"
-#include <iostream>
-#include <conio.h>
-#include <opencv2\opencv.hpp>
-using namespace std;
-using namespace cv;
 
 
 void KinectHelper::Run()
@@ -33,6 +28,11 @@ HRESULT KinectHelper::UpdateFrame()
 			{
 				break;
 			}
+		}
+
+		if (m_pGestureRecgnition != nullptr)
+		{
+			m_pGestureRecgnition->update(m_pRightHand);
 		}
 	}
 	return hr;
@@ -86,9 +86,10 @@ HRESULT KinectHelper::UpdateBodyData()
 					if (NULL != pBody[i])
 					{
 						//cout << i << endl;
-						Joint joints[JointType_Count];
-						pBody[i]->GetJoints(JointType_Count, joints);
-						m_pRightHand->refreshHandData(m_pCoordinateMapper, joints[JointType_HandRight].Position, joints[JointType_WristRight].Position,  m_pDepthArray);
+						//Joint joints[JointType_Count];
+						//pBody[i]->GetJoints(JointType_Count, joints);
+						m_pRightHand->refreshHandData(m_pCoordinateMapper, pBody[i], m_pDepthArray);
+						//m_pRightHand->refreshHandData(m_pCoordinateMapper, joints,  m_pDepthArray);
 					}
 				}
 			}
@@ -133,6 +134,7 @@ HRESULT KinectHelper::init()
 
 	m_pDepthArray = new UINT16[cDepthHeight * cDepthWidth];
 	m_pCVHelper = new CVHelper;
+	m_pGestureRecgnition = new GestureRecgnition;
 	m_pRightHand = new Hand;
 	return hr;
 }
@@ -198,6 +200,11 @@ void KinectHelper::deInit()
 	if (m_pCVHelper != nullptr)
 	{
 		delete m_pCVHelper;
+	}
+
+	if (m_pGestureRecgnition != nullptr)
+	{
+		delete m_pGestureRecgnition;
 	}
 }
 
