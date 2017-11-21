@@ -151,6 +151,7 @@
     <ClCompile Include="CVHelper.cpp" />
     <ClCompile Include="GestureRecgnition.cpp" />
     <ClCompile Include="Hand.cpp" />
+    <ClCompile Include="HandEventsHandler.cpp" />
     <ClCompile Include="HandPoint.cpp" />
     <ClCompile Include="KinectHelper.cpp" />
     <ClCompile Include="main.cpp" />
@@ -161,6 +162,7 @@
     <ClInclude Include="CVHelper.h" />
     <ClInclude Include="GestureRecgnition.h" />
     <ClInclude Include="Hand.h" />
+    <ClInclude Include="HandEventsHandler.h" />
     <ClInclude Include="HandPoint.h" />
     <ClInclude Include="KinectHelper.h" />
     <ClInclude Include="utils.h" />

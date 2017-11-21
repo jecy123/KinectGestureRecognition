@@ -1,5 +1,6 @@
 #include "KinectHelper.h"
 #include "utils.h"
+#include "HandEventsHandler.h"
 
 
 void KinectHelper::Run()
@@ -9,6 +10,7 @@ void KinectHelper::Run()
 	k.UpdateFrame();
 	k.deInit();
 }
+
 
 
 HRESULT KinectHelper::UpdateFrame()
@@ -136,6 +138,9 @@ HRESULT KinectHelper::init()
 	m_pCVHelper = new CVHelper;
 	m_pGestureRecgnition = new GestureRecgnition;
 	m_pRightHand = new Hand;
+
+	m_pEventHandler = new HandEventsHandler;
+	m_pGestureRecgnition->setGestureEventsHandler(m_pEventHandler);
 	return hr;
 }
 
@@ -206,6 +211,11 @@ void KinectHelper::deInit()
 	{
 		delete m_pGestureRecgnition;
 	}
+
+	if (m_pEventHandler != nullptr)
+	{
+		delete m_pEventHandler;
+	}
 }
 
 KinectHelper::KinectHelper()
@@ -217,6 +227,7 @@ KinectHelper::KinectHelper()
 	m_pRightHand = nullptr;
 	m_pDepthArray = nullptr;
 	m_pCVHelper = nullptr;
+	m_pEventHandler = nullptr;
 }
 
 

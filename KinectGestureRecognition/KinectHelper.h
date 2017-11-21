@@ -17,6 +17,7 @@ public:
 	HRESULT UpdateFrame();
 	HRESULT UpdateDepthData();
 	HRESULT UpdateBodyData();
+	GestureEvents * m_pEventHandler;
 private:
 	HRESULT initDepth();
 	HRESULT initBody();

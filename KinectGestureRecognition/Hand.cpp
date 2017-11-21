@@ -16,6 +16,15 @@ inline int dotProduct(HandPoint & p0, HandPoint & p1, HandPoint & p2)
 	return (p1.m_depthX - p0.m_depthX) * (p2.m_depthX - p0.m_depthX) + (p1.m_depthY - p0.m_depthY) * (p2.m_depthY - p0.m_depthY);
 }
 
+inline float cosin(HandPoint & p0, HandPoint & p1, HandPoint & p2)
+{
+	float dot = dotProduct(p0, p1, p2);
+	float dis10 = HandPoint::disBtw2Points(p0, p1);
+	float dis20 = HandPoint::disBtw2Points(p0, p2);
+	return dot / (dis10 * dis20);
+}
+
+
 inline bool cmp(HandPoint p1, HandPoint p2)
 {
 
@@ -118,7 +127,8 @@ void Hand::getHandOutline(ICoordinateMapper * mapper, UINT16 * depthArray)
 				bool right = j + 1 < cDepthWidth ? m_pHandAreaArray[i][j + 1] : false;
 				bool isInContour = !top || !bottom || !left || !right;
 				m_pHandLineArray[i][j] = isInContour;
-				if (isInContour){
+				if (isInContour)
+				{
 					HandPoint p(j, i, getCameraZFromDepthXY(mapper, j, i, depthArray[i * cDepthWidth + j]));
 
 					if (i > maxI)
@@ -138,6 +148,11 @@ void Hand::getHandOutline(ICoordinateMapper * mapper, UINT16 * depthArray)
 	{
 		cMaxYhandPoint = HandOutline[0];
 		sort(HandOutline.begin() + 1, HandOutline.end(), cmp);
+	}
+
+	for (int i = 0; i < HandOutline.size(); i++)
+	{
+		HandOutline[i].m_disFromCenter = HandPoint::disBtw2Points(HandOutline[i], HandCenter);
 	}
 }
 
@@ -259,7 +274,7 @@ bool Hand::checkIsOutline(int x, int y)
 		conventArray(x + 1, y) << 2 |
 		conventArray(x + 1, y - 1) << 1 |
 		conventArray(x, y - 1);
-*/
+	*/
 	UCHAR handCheck = 0x00 |
 		conventArray(x, y) << 4 |
 		conventArray(x - 1, y) << 3 |
@@ -323,7 +338,7 @@ void Hand::initVisited()
 
 void Hand::checkFingerPoint()
 {
-	int k = 5;
+	int k = 2;
 	int j = 0;
 	for (int i = k; i + k < HandOutline.size(); i++)
 	{
@@ -334,7 +349,7 @@ void Hand::checkFingerPoint()
 		bool isSharpPoint = dis2 > dis1 && dis2 > dis3;*/
 
 		bool isAboveCenter = HandOutline[i].m_depthY < HandWrist.m_depthY;
-		bool isAcuteAngle = dotProduct(HandOutline[i], HandOutline[i - k], HandOutline[i + k]) > 20;
+		bool isAcuteAngle = cosin(HandOutline[i], HandOutline[i - k], HandOutline[i + k]) >= 0.5;
 		bool isFinger = crossProduct(HandOutline[i], HandOutline[i - k], HandOutline[i + k]) > 20;
 
 		if (isAboveCenter && isAcuteAngle && isFinger)

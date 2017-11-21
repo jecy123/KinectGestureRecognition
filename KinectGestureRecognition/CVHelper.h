@@ -12,7 +12,6 @@ public:
 	void drawLine(HandPoint p1, HandPoint p2, Scalar color = cvScalar(255, 0, 255));
 	void show();
 	int getKeyPressed();
-	void setCursor(int x, int y);
 private:
 	Mat m_image;
 	int m_nPressedKey;

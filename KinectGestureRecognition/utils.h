@@ -38,20 +38,16 @@ inline void gotoXY(int x, int y)
 	SetConsoleCursorPosition(h, coord);
 }
 
-inline string getCurrentSystemTime()
+inline ULONG getTickCounts()
 {
-	auto tt = chrono::system_clock::to_time_t(chrono::system_clock::now());
-	struct tm* ptm = localtime(&tt);
-	char date[60] = { 0 };
-	sprintf(date, 
-		"%d-%02d-%02d      %02d:%02d:%02d", 
-		(int)ptm->tm_year + 1900, 
-		(int)ptm->tm_mon + 1, 
-		(int)ptm->tm_mday,
-		(int)ptm->tm_hour, 
-		(int)ptm->tm_min, 
-		(int)ptm->tm_sec);
-	return string(date);
+	return GetTickCount();
 }
+
+inline void setCursor(int x, int y, float vx = 0.0, float vy = 0.0)
+{
+
+	SetCursorPos(x * 5, y * 5);
+}
+
 
 
