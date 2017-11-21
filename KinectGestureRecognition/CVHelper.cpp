@@ -67,6 +67,8 @@ void CVHelper::draw(UINT16 * depthData, Hand * rightHand)
 			}
 		}
 
+		drawPoint(rightHand->HandTip, cvScalar(0, 0, 255), 10);
+
 		//CvScalar color = cvScalar(0, 255, 0);
 		//circle(m_image, cvPoint(rightHand->HandCenter.m_depthX, rightHand->HandCenter.m_depthY), 5, color, -1);
 		//drawPoint(rightHand->HandCenter);
@@ -78,11 +80,11 @@ void CVHelper::draw(UINT16 * depthData, Hand * rightHand)
 		//drawLine(rightHand->HandCenter, rightHand->HandThumb);
 		//drawLine(rightHand->HandCenter, rightHand->HandTip);
 
-		for (int i = 0; i < rightHand->HandFingers.size(); i++)
+		/*for (int i = 0; i < rightHand->HandFingers.size(); i++)
 		{
 			drawPoint(rightHand->HandFingers[i], cvScalar(0, 0, 255), 2);
 
-		}
+		}*/
 
 		/*for (int i = 0; i < MAX_IN_FINGER; i++)
 		{

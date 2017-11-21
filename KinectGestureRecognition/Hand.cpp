@@ -85,6 +85,7 @@ void Hand::refreshHandData(ICoordinateMapper * mapper, IBody * pBody, UINT16 * d
 		Joint joints[JointType_Count];
 
 		pBody -> GetJoints(JointType_Count, joints);
+		//获取右手手掌的状态
 		pBody->get_HandRightState(&m_handState);
 
 		this -> refreshHandData(mapper, joints, depthArray);
@@ -144,11 +145,11 @@ void Hand::getHandOutline(ICoordinateMapper * mapper, UINT16 * depthArray)
 		}
 	}
 	//轮廓点数组排序
-	if (HandOutline.size()>2)
+	/*if (HandOutline.size()>2)
 	{
 		cMaxYhandPoint = HandOutline[0];
 		sort(HandOutline.begin() + 1, HandOutline.end(), cmp);
-	}
+	}*/
 
 	for (int i = 0; i < HandOutline.size(); i++)
 	{
@@ -184,7 +185,17 @@ void Hand::refreshHandData(ICoordinateMapper * mapper, Joint joints[JointType_Co
 	calculateHandRect();
 	getHandArea(mapper, depthArray);
 	getHandOutline(mapper, depthArray);
-	checkFingerPoint();
+	
+	float longestDis = 0;
+	for (int i = 0; i < HandOutline.size(); i++)
+	{
+		if (longestDis < HandOutline[i].m_disFromCenter && HandOutline[i].m_depthY < HandCenter.m_depthY)
+		{
+			longestDis = HandOutline[i].m_disFromCenter;
+			HandTip = HandOutline[i];
+		}
+	}
+	//checkFingerPoint();
 }
 
 
