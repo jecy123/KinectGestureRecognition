@@ -1,8 +1,9 @@
 #pragma once
 #include "utils.h"
 #include "Hand.h"
+#include "dllapi.h"
 
-class CVHelper
+class DLL_API CVHelper
 {
 public:
 	CVHelper();

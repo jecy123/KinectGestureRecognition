@@ -1,6 +1,8 @@
 #pragma once
 #include "GestureRecgnition.h"
-class HandEventsHandler : public GestureEvents
+#include "dllapi.h"
+
+class DLL_API HandEventsHandler : public GestureEventHandler
 {
 public:
 	HandEventsHandler();

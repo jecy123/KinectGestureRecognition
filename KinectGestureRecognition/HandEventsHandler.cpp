@@ -1,3 +1,5 @@
+#define DLL_IMPLEMENT
+
 #include "HandEventsHandler.h"
 #include "utils.h"
 

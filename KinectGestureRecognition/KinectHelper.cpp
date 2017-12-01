@@ -1,7 +1,8 @@
+#define DLL_IMPLEMENT
+
 #include "KinectHelper.h"
 #include "utils.h"
 #include "HandEventsHandler.h"
-
 
 void KinectHelper::Run()
 {
@@ -139,11 +140,17 @@ HRESULT KinectHelper::init()
 	m_pGestureRecgnition = new GestureRecgnition;
 	m_pRightHand = new Hand;
 
-	m_pEventHandler = new HandEventsHandler;
-	m_pGestureRecgnition->setGestureEventsHandler(m_pEventHandler);
+	//m_pEventHandler = new HandEventsHandler;
+	//m_pGestureRecgnition->setGestureEventsHandler(m_pEventHandler);
 	return hr;
 }
 
+
+void KinectHelper::setGestureEventHandler(GestureEventHandler * pEventHandler)
+{
+	this->m_pEventHandler = pEventHandler;
+	m_pGestureRecgnition->setGestureEventsHandler(pEventHandler);
+}
 
 HRESULT KinectHelper::initBody()
 {

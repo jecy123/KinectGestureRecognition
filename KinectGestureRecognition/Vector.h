@@ -1,7 +1,9 @@
 #pragma once
 
 #include "HandPoint.h"
-class Vector
+#include "dllapi.h"
+
+class DLL_API Vector
 {
 public:
 	Vector(HandPoint & p1, HandPoint & p2);

@@ -31,7 +31,7 @@
     <CharacterSet>Unicode</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
-    <ConfigurationType>Application</ConfigurationType>
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
     <UseDebugLibraries>true</UseDebugLibraries>
     <PlatformToolset>v120</PlatformToolset>
     <CharacterSet>Unicode</CharacterSet>
@@ -155,12 +155,12 @@
     <ClCompile Include="HandEventsHandler.cpp" />
     <ClCompile Include="HandPoint.cpp" />
     <ClCompile Include="KinectHelper.cpp" />
-    <ClCompile Include="main.cpp" />
     <ClCompile Include="utils.cpp" />
     <ClCompile Include="Vector.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="CVHelper.h" />
+    <ClInclude Include="dllapi.h" />
     <ClInclude Include="GestureRecgnition.h" />
     <ClInclude Include="Hand.h" />
     <ClInclude Include="HandEventsHandler.h" />

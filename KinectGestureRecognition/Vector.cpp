@@ -1,3 +1,5 @@
+#define DLL_IMPLEMENT
+
 #include "Vector.h"
 
 

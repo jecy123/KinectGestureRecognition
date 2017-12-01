@@ -1,7 +1,8 @@
 #pragma once
 #include <Kinect.h>
+#include "dllapi.h"
 
-class HandPoint
+class DLL_API HandPoint
 {
 public:
 	HandPoint(int x, int y, float z);

@@ -1,15 +1,18 @@
 #pragma once
+#include "dllapi.h"
 #include "utils.h"
 #include "Hand.h"
 #include "CVHelper.h"
 #include "GestureRecgnition.h"
 
-class KinectHelper
+class DLL_API KinectHelper
 {
 public:
 
 	KinectHelper();
 	virtual ~KinectHelper();
+
+	void setGestureEventHandler(GestureEventHandler * pEventHandler);
 
 	static void Run();
 	HRESULT init();
@@ -17,7 +20,8 @@ public:
 	HRESULT UpdateFrame();
 	HRESULT UpdateDepthData();
 	HRESULT UpdateBodyData();
-	GestureEvents * m_pEventHandler;
+	GestureEventHandler * m_pEventHandler;
+	
 private:
 	HRESULT initDepth();
 	HRESULT initBody();

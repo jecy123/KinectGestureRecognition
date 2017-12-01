@@ -1,5 +1,6 @@
 #pragma once
 #include "Hand.h"
+#include "dllapi.h"
 
 typedef struct _GestureArgs
 {
@@ -30,7 +31,7 @@ typedef struct _GestureArgs
 }GestureArgs;
 
 
-class GestureEvents
+class DLL_API GestureEventHandler
 {
 public:
 	virtual void onOneFingerMove(GestureArgs * args) = 0;
@@ -43,7 +44,7 @@ public:
 	virtual void onHandHoldPull(GestureArgs * args) = 0;
 };
 
-enum GestureType
+enum DLL_API GestureType
 {
 	TYPE_ONE_FINGER,
 	TYPE_OPEN,
@@ -52,7 +53,7 @@ enum GestureType
 	TYPE_UNKNOWN
 };
 
-class GestureRecgnition
+class DLL_API GestureRecgnition
 {
 public:
 	GestureRecgnition();
@@ -63,12 +64,12 @@ public:
 	void recgnition();
 	GestureType getType();
 
-	void setGestureEventsHandler(GestureEvents * handler);
+	void setGestureEventsHandler(GestureEventHandler * handler);
 	void setType(GestureType type);
 private:
 	GestureType m_type;
 
-	GestureEvents * eventHandler;
+	GestureEventHandler * eventHandler;
 	Hand * hand;
 	ULONG currentTime;
 	ULONG lastTime;

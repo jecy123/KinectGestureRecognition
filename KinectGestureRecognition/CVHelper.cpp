@@ -1,3 +1,5 @@
+#define DLL_IMPLEMENT
+
 #include "CVHelper.h"
 #include "utils.h"
 using namespace cv;

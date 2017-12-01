@@ -1,3 +1,5 @@
+#define DLL_IMPLEMENT
+
 #include "GestureRecgnition.h"
 #include "utils.h"
 
@@ -20,7 +22,7 @@ void GestureRecgnition::start(Hand * hand)
 }
 
 
-void GestureRecgnition::setGestureEventsHandler(GestureEvents * handler)
+void GestureRecgnition::setGestureEventsHandler(GestureEventHandler * handler)
 {
 	this->eventHandler = handler;
 }

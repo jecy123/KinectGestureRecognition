@@ -1,24 +1,25 @@
 #pragma once
 #include "utils.h"
 #include "HandPoint.h"
+#include "dllapi.h"
 
 #define MAX_FINGERCNT 50
 #define MAX_IN_FINGER 4
 
-enum checkType
+enum DLL_API checkType
 {
 	TYPE_HAND_AREA,
 	TYPE_HAND_OUTLINE
 };
 
-enum handType
+enum DLL_API handType
 {
 	Hand_one_finger,
 	Hand_open,
 	Hand_close
 };
 
-class Hand
+class DLL_API Hand
 {
 public:
 	Hand();
