@@ -12,6 +12,17 @@ void KinectHelper::Run()
 }
 
 
+void KinectHelper::setGestureRecgnition(GestureRecgnition * pGestureRecgnition)
+{
+	this->m_pGestureRecgnition = pGestureRecgnition;
+}
+
+
+void KinectHelper::setGestureEvent(GestureEvents * pEventHandler)
+{
+	this->m_pEventHandler = pEventHandler;
+	this->m_pGestureRecgnition->setGestureEventsHandler(pEventHandler);
+}
 
 HRESULT KinectHelper::UpdateFrame()
 {
@@ -139,8 +150,8 @@ HRESULT KinectHelper::init()
 	m_pGestureRecgnition = new GestureRecgnition;
 	m_pRightHand = new Hand;
 
-	m_pEventHandler = new HandEventsHandler;
-	m_pGestureRecgnition->setGestureEventsHandler(m_pEventHandler);
+	//m_pEventHandler = new HandEventsHandler;
+	//m_pGestureRecgnition->setGestureEventsHandler(m_pEventHandler);
 	return hr;
 }
 
@@ -180,6 +191,7 @@ HRESULT KinectHelper::initDepth()
 
 void KinectHelper::deInit()
 {
+	cout << "DeInit processing..." << endl;
 	BOOLEAN isOpened;
 	m_pKinectSensor->get_IsOpen(&isOpened);
 	if (isOpened)
@@ -216,6 +228,7 @@ void KinectHelper::deInit()
 	{
 		delete m_pEventHandler;
 	}
+
 }
 
 KinectHelper::KinectHelper()

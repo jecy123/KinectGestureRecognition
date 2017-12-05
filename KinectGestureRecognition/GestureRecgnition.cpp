@@ -7,6 +7,8 @@ GestureRecgnition::GestureRecgnition()
 	hand = nullptr;
 	eventHandler = nullptr;
 	isTickCountStart = false;
+	m_lastType = m_type = TYPE_UNKNOWN;
+	
 }
 
 GestureRecgnition::~GestureRecgnition()
@@ -27,14 +29,11 @@ void GestureRecgnition::setGestureEventsHandler(GestureEvents * handler)
 
 void GestureRecgnition::doGestureEvent()
 {
-	gotoXY(0, 15);
-	cout << "                       ";
-	gotoXY(0, 15);
 	if (m_type == TYPE_ONE_FINGER)
 	{
 		if (currentArgs.vz < -0.65)
 		{
-			cout << "Finger Touch!" << endl;
+			//cout << "Finger Touch!" << endl;
 			if (this->eventHandler!=nullptr)
 			{
 				this->eventHandler->onOneFingerTouch(&currentArgs);
@@ -50,49 +49,54 @@ void GestureRecgnition::doGestureEvent()
 	}
 	else if (m_type == TYPE_HOLD)
 	{
-		cout << "Hold move!" << endl; 
+		//cout << "Hold move!" << endl; 
 		if (this->eventHandler != nullptr)
 		{
-			this->eventHandler->onHandHoldMove(&currentArgs);
-		}
-		if (currentArgs.vz < -0.7)
-		{
-			cout << "Hold push!" << endl;
-			if (this->eventHandler != nullptr)
+			if (m_lastType == TYPE_OPEN)
 			{
-				this->eventHandler->onHandHoldPush(&currentArgs);
+				this->eventHandler->onHandGrab(&currentArgs);
 			}
-		}
-		else if (currentArgs.vz > 0.7)
-		{
-			cout << "Hold pull!" << endl;
-			if (this->eventHandler != nullptr)
-			{
-				this->eventHandler->onHandHoldPull(&currentArgs);
+			else{
+				if (currentArgs.vz < -0.7)
+				{
+					//cout << "Hold push!" << endl;
+					this->eventHandler->onHandHoldPush(&currentArgs);
+				}
+				else if (currentArgs.vz > 0.7)
+				{
+					//cout << "Hold pull!" << endl;
+					this->eventHandler->onHandHoldPull(&currentArgs);
+				}
+				else
+				{
+					this->eventHandler->onHandHoldMove(&currentArgs);
+				}
 			}
 		}
 	}
 	else if (m_type == TYPE_OPEN)
 	{
-		cout << "Hand move!" << endl;
 		if (this->eventHandler != nullptr)
 		{
-			this->eventHandler->onHandMove(&currentArgs);
-		}
-		if (currentArgs.vz < -1)
-		{
-			cout << "Hand push!" << endl;
-			if (this->eventHandler != nullptr)
+			if (m_lastType == TYPE_HOLD)
 			{
-				this->eventHandler->onHandPush(&currentArgs);
+				this->eventHandler->onHandRelease(&currentArgs);
 			}
-		}
-		else if (currentArgs.vz > 1)
-		{
-			cout << "Hand pull!" << endl;
-			if (this->eventHandler != nullptr)
-			{
-				this->eventHandler->onHandPull(&currentArgs);
+			else{
+				if (currentArgs.vz < -1)
+				{
+					//cout << "Hand push!" << endl;
+					this->eventHandler->onHandPush(&currentArgs);
+				}
+				else if (currentArgs.vz > 1)
+				{
+					//cout << "Hand pull!" << endl;
+					this->eventHandler->onHandPull(&currentArgs);
+				}
+				else
+				{
+					this->eventHandler->onHandMove(&currentArgs);
+				}
 			}
 		}
 	}
@@ -139,6 +143,9 @@ void GestureRecgnition::recgnition()
 				currentArgs.vx = (double)(currentArgs.x - lastArgs.x) / timeInterval;
 				currentArgs.vy = (double)(currentArgs.y - lastArgs.y) / timeInterval;
 				currentArgs.vz = (double)(currentArgs.z - lastArgs.z) / timeInterval;
+
+				currentArgs.dx = (currentArgs.x - lastArgs.x);
+				currentArgs.dy = (currentArgs.y - lastArgs.y);
 				
 				doGestureEvent();
 			}
@@ -151,6 +158,8 @@ void GestureRecgnition::update(Hand * hand)
 {
 	string s;
 	this->hand = hand;
+	//先记录一下更新状态之前的m_type
+	m_lastType = m_type;
 	switch (hand->m_handState)
 	{
 	case HandState_Open:

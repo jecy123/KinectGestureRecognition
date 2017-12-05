@@ -10,6 +10,10 @@ typedef struct _GestureArgs
 	double vx;
 	double vy;
 	double vz;
+
+	int dx;
+	int dy;
+
 	_GestureArgs()
 	{
 		reset();
@@ -19,6 +23,7 @@ typedef struct _GestureArgs
 		x = y = 0;
 		z = 0.0;
 		vx = vy = vz = 0.0;
+		dx = dy = 0;
 	}
 
 	void setXYZ(int x, int y, float z)
@@ -41,6 +46,8 @@ public:
 	virtual void onHandHoldMove(GestureArgs * args) = 0;
 	virtual void onHandHoldPush(GestureArgs * args) = 0;
 	virtual void onHandHoldPull(GestureArgs * args) = 0;
+	virtual void onHandGrab(GestureArgs * args) = 0;
+	virtual void onHandRelease(GestureArgs * args) = 0;
 };
 
 enum GestureType
@@ -67,6 +74,7 @@ public:
 	void setType(GestureType type);
 private:
 	GestureType m_type;
+	GestureType m_lastType;
 
 	GestureEvents * eventHandler;
 	Hand * hand;

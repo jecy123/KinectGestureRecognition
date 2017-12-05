@@ -14,6 +14,9 @@ public:
 	static void Run();
 	HRESULT init();
 	void	deInit();
+	void	setGestureRecgnition(GestureRecgnition * pGestureRecgnition);
+	void	setGestureEvent(GestureEvents * pEventHandler);
+
 	HRESULT UpdateFrame();
 	HRESULT UpdateDepthData();
 	HRESULT UpdateBodyData();

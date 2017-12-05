@@ -19,6 +19,7 @@ static const int cDepthHeight = 424;
 static const float cThreshold = 40;
 static const float depthThreshold = cThreshold / 1000.0;
 
+
 template<class Interface>
 inline void SafeRealease(Interface * & pInterfaceToRelease)
 {

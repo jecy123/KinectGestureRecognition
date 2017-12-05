@@ -3,6 +3,11 @@
 class HandEventsHandler : public GestureEvents
 {
 public:
+	POINT cursorPoint;
+
+	double maxPositiveVz, maxNagativeVz;
+	double minPositiveVz, minNagativeVz;
+
 	HandEventsHandler();
 	~HandEventsHandler();
 	
@@ -13,6 +18,8 @@ public:
 	void onHandPull(GestureArgs * args); 
 	void onHandHoldMove(GestureArgs * args); 
 	void onHandHoldPush(GestureArgs * args); 
-	void onHandHoldPull(GestureArgs * args); 
+	void onHandHoldPull(GestureArgs * args);
+	void onHandGrab(GestureArgs * args);
+	void onHandRelease(GestureArgs * args);
 };
 
