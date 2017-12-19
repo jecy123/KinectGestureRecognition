@@ -29,24 +29,9 @@ void CVHelper::drawLine(HandPoint p1, HandPoint p2, Scalar color)
 }
 
 
-void CVHelper::draw(UINT16 * depthData, Hand * rightHand)
+void CVHelper::drawHand(uchar * imgData, Hand * hand)
 {
-	m_image.setTo(0);
-	uchar * imgData = (uchar *)m_image.data;
-	//if (depthData != nullptr)
-	//{
-
-	//	uchar * imgData = (uchar *)m_image.data;
-	//	int j = 0;
-	//	for (int i = 0; i < cDepthHeight * cDepthWidth; i++)
-	//	{
-	//		imgData[j++] = depthData[i];
-	//		imgData[j++] = depthData[i];
-	//		imgData[j++] = depthData[i];
-	//	}
-	//}
-
-	if (rightHand != nullptr)
+	if (hand != nullptr)
 	{
 		int k = 0;
 		int l = 0;
@@ -55,7 +40,7 @@ void CVHelper::draw(UINT16 * depthData, Hand * rightHand)
 		{
 			for (int j = 0; j < cDepthWidth; j++)
 			{
-				if (rightHand->m_pHandAreaArray[i][j])
+				if (hand->m_pHandAreaArray[i][j])
 				{
 					imgData[k++] = 255;
 					imgData[k++] = 255;
@@ -69,7 +54,80 @@ void CVHelper::draw(UINT16 * depthData, Hand * rightHand)
 			}
 		}
 
-		drawPoint(rightHand->HandTip, cvScalar(0, 0, 255), 10);
+		drawPoint(hand->HandTip, cvScalar(0, 0, 255), 10);
+	}
+}
+
+void CVHelper::draw(UINT16 * depthData, Hand * leftHand, Hand * rightHand)
+{
+	m_image.setTo(0);
+	uchar * imgData = (uchar *)m_image.data;
+
+	drawHand(imgData, leftHand);
+	drawHand(imgData, rightHand);
+	//if (depthData != nullptr)
+	//{
+
+	//	uchar * imgData = (uchar *)m_image.data;
+	//	int j = 0;
+	//	for (int i = 0; i < cDepthHeight * cDepthWidth; i++)
+	//	{
+	//		imgData[j++] = depthData[i];
+	//		imgData[j++] = depthData[i];
+	//		imgData[j++] = depthData[i];
+	//	}
+	//}
+
+
+	//if (leftHand != nullptr)
+	//{
+	//	int k = 0;
+	//	int l = 0;
+
+	//	for (int i = 0; i < cDepthHeight; i++)
+	//	{
+	//		for (int j = 0; j < cDepthWidth; j++)
+	//		{
+	//			if (rightHand->m_pHandAreaArray[i][j])
+	//			{
+	//				imgData[k++] = 255;
+	//				imgData[k++] = 255;
+	//				imgData[k++] = 255;
+	//			}
+	//			else{
+	//				imgData[k++] = 0;
+	//				imgData[k++] = 0;
+	//				imgData[k++] = 0;
+	//			}
+	//		}
+	//	}
+
+	//	drawPoint(rightHand->HandTip, cvScalar(0, 0, 255), 10);
+	//}
+	//if (rightHand != nullptr)
+	//{
+	//	int k = 0;
+	//	int l = 0;
+
+	//	for (int i = 0; i < cDepthHeight; i++)
+	//	{
+	//		for (int j = 0; j < cDepthWidth; j++)
+	//		{
+	//			if (rightHand->m_pHandAreaArray[i][j])
+	//			{
+	//				imgData[k++] = 255;
+	//				imgData[k++] = 255;
+	//				imgData[k++] = 255;
+	//			}
+	//			else{
+	//				imgData[k++] = 0;
+	//				imgData[k++] = 0;
+	//				imgData[k++] = 0;
+	//			}
+	//		}
+	//	}
+
+	//	drawPoint(rightHand->HandTip, cvScalar(0, 0, 255), 10);
 
 		//CvScalar color = cvScalar(0, 255, 0);
 		//circle(m_image, cvPoint(rightHand->HandCenter.m_depthX, rightHand->HandCenter.m_depthY), 5, color, -1);
@@ -118,7 +176,7 @@ void CVHelper::draw(UINT16 * depthData, Hand * rightHand)
 		ss << ")";
 		string msg = ss.str();
 		putText(m_image, msg, cvPoint(rightHand->HandCenter.m_depthX, rightHand->HandCenter.m_depthY), 1,1,color);*/
-	}
+	//}
 }
 
 void CVHelper::show()

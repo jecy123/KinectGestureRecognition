@@ -36,6 +36,7 @@ private:
 	IBodyFrameReader *		m_pBodyReader;
 
 	UINT16 *				m_pDepthArray;
+	Hand *					m_pLeftHand;
 	Hand *					m_pRightHand;
 	CVHelper *				m_pCVHelper;
 	GestureRecgnition *		m_pGestureRecgnition;

@@ -38,7 +38,7 @@ HRESULT KinectHelper::UpdateFrame()
 
 		if (m_pCVHelper != nullptr && m_pDepthArray != nullptr /*&& m_pRightHand != nullptr*/)
 		{
-			m_pCVHelper->draw(m_pDepthArray, m_pRightHand);
+			m_pCVHelper->draw(m_pDepthArray, m_pLeftHand, m_pRightHand);
 			m_pCVHelper->show();
 			if (m_pCVHelper->getKeyPressed() == VK_ESCAPE)
 			{
@@ -105,6 +105,7 @@ HRESULT KinectHelper::UpdateBodyData()
 						//cout << i << endl;
 						//Joint joints[JointType_Count];
 						//pBody[i]->GetJoints(JointType_Count, joints);
+						m_pLeftHand->refreshHandData(m_pCoordinateMapper, pBody[i], m_pDepthArray);
 						m_pRightHand->refreshHandData(m_pCoordinateMapper, pBody[i], m_pDepthArray);
 						//m_pRightHand->refreshHandData(m_pCoordinateMapper, joints,  m_pDepthArray);
 					}
@@ -153,6 +154,10 @@ HRESULT KinectHelper::init()
 	m_pCVHelper = new CVHelper;
 	m_pGestureRecgnition = new GestureRecgnition;
 	m_pRightHand = new Hand;
+	m_pLeftHand = new Hand;
+
+	m_pRightHand->setHandType(__handType::typeRightHand);
+	m_pLeftHand->setHandType(__handType::typeLeftHand);
 	return hr;
 }
 
@@ -222,6 +227,11 @@ void KinectHelper::deInit()
 	if (m_pDepthArray != nullptr)
 	{
 		delete[] m_pDepthArray;
+	}
+
+	if (m_pLeftHand != nullptr)
+	{
+		delete m_pLeftHand;
 	}
 
 	if (m_pRightHand != nullptr)

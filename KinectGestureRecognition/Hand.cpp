@@ -87,8 +87,14 @@ void Hand::refreshHandData(ICoordinateMapper * mapper, IBody * pBody, UINT16 * d
 		Joint joints[JointType_Count];
 
 		pBody -> GetJoints(JointType_Count, joints);
-		//获取右手手掌的状态
-		pBody->get_HandRightState(&m_handState);
+		//获取手掌的状态
+		if (this->m_handType == __handType::typeRightHand){
+			pBody->get_HandRightState(&m_handState);
+		}
+		else if (this->m_handType == __handType::typeLeftHand)
+		{
+			pBody->get_HandLeftState(&m_handState);
+		}
 
 		this -> refreshHandData(mapper, joints, depthArray);
 	}
@@ -167,15 +173,30 @@ void Hand::refreshHandData(ICoordinateMapper * mapper, Joint joints[JointType_Co
 	clearHandOutLineVector();
 	maxDis = 0;
 
-	//目前只测试右手
-	//右手的掌心点：
-	CameraSpacePoint pointCenter = joints[JointType_HandRight].Position;
-	//右手的腕关节点
-	CameraSpacePoint pointWrist = joints[JointType_WristRight].Position;
-	//右手的指尖节点
-	CameraSpacePoint pointTip = joints[JointType_HandTipRight].Position;
-	//右手拇指节点
-	CameraSpacePoint pointThumb = joints[JointType_ThumbRight].Position;
+
+	//手的掌心点：
+	CameraSpacePoint pointCenter;
+	//手的腕关节点
+	CameraSpacePoint pointWrist;
+	//手的指尖节点
+	CameraSpacePoint pointTip;
+	//手拇指节点
+	CameraSpacePoint pointThumb;
+
+	if (m_handType == __handType::typeRightHand)
+	{
+		pointCenter = joints[JointType_HandRight].Position;
+		pointWrist = joints[JointType_WristRight].Position;
+		pointTip = joints[JointType_HandTipRight].Position;
+		pointThumb = joints[JointType_ThumbRight].Position;
+	}
+	else{
+		pointCenter = joints[JointType_HandLeft].Position;
+		pointWrist = joints[JointType_WristLeft].Position;
+		pointTip = joints[JointType_HandTipLeft].Position;
+		pointThumb = joints[JointType_ThumbLeft].Position;
+
+	}
 
 	this->HandCenter = HandPoint::getHandPoint(mapper, pointCenter);
 	this->HandWrist	= HandPoint::getHandPoint(mapper, pointWrist);
@@ -212,7 +233,7 @@ Hand::~Hand()
 }
 
 
-UINT16 Hand::conventArray(int x, int y, checkType type)
+UINT16 Hand::conventArray(int x, int y, __checkType type)
 {
 	bool(*array)[cDepthHeight][cDepthWidth];
 	if (type == TYPE_HAND_AREA)
@@ -347,6 +368,12 @@ void Hand::initVisited()
 			m_visited[i][j] = false;
 		}
 	}
+}
+
+
+void Hand::setHandType(__handType type)
+{
+	this->m_handType = type;
 }
 
 void Hand::checkFingerPoint()
