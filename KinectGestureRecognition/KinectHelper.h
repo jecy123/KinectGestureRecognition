@@ -13,18 +13,22 @@ public:
 	virtual ~KinectHelper();
 
 	void setGestureEventHandler(GestureEventHandler * pEventHandler);
+	void setGestureHandler(GestureRecgnition * pRecgnition);
 
 	static void Run();
 	HRESULT init();
 	void	deInit();
+	void	startRefreshData(GestureRecgnition * pRecgnition = nullptr);
+	void	stopRefreshData();
 	HRESULT UpdateFrame();
-	HRESULT UpdateDepthData();
-	HRESULT UpdateBodyData();
 	GestureEventHandler * m_pEventHandler;
 	
 private:
 	HRESULT initDepth();
 	HRESULT initBody();
+	
+	HRESULT UpdateDepthData();
+	HRESULT UpdateBodyData();
 
 	IKinectSensor *			m_pKinectSensor;
 	ICoordinateMapper *		m_pCoordinateMapper;
@@ -35,6 +39,8 @@ private:
 	Hand *					m_pRightHand;
 	CVHelper *				m_pCVHelper;
 	GestureRecgnition *		m_pGestureRecgnition;
+
+	bool					m_bRunning;
 
 protected:
 	virtual void onInit(){};

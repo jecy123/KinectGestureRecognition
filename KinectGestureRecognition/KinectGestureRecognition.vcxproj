@@ -25,7 +25,7 @@
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
-    <ConfigurationType>Application</ConfigurationType>
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
     <UseDebugLibraries>true</UseDebugLibraries>
     <PlatformToolset>v120</PlatformToolset>
     <CharacterSet>Unicode</CharacterSet>
@@ -69,7 +69,7 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <LinkIncremental>true</LinkIncremental>
     <IncludePath>C:\Program Files\Microsoft SDKs\Kinect\v2.0_1409\inc;C:\OpenCV\opencv\build\include;$(IncludePath)</IncludePath>
-    <LibraryPath>C:\OpenCV\opencv\build\x64\vc12\staticlib;C:\Program Files\Microsoft SDKs\Kinect\v2.0_1409\Lib\x64;C:\OpenCV\opencv\build\x64\vc12\lib;$(LibraryPath)</LibraryPath>
+    <LibraryPath>C:\OpenCV\opencv\build\x86\vc12\lib;C:\Program Files\Microsoft SDKs\Kinect\v2.0_1409\Lib\x86;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <LinkIncremental>true</LinkIncremental>
@@ -152,7 +152,6 @@
     <ClCompile Include="CVHelper.cpp" />
     <ClCompile Include="GestureRecgnition.cpp" />
     <ClCompile Include="Hand.cpp" />
-    <ClCompile Include="HandEventsHandler.cpp" />
     <ClCompile Include="HandPoint.cpp" />
     <ClCompile Include="KinectHelper.cpp" />
     <ClCompile Include="utils.cpp" />
@@ -163,7 +162,6 @@
     <ClInclude Include="dllapi.h" />
     <ClInclude Include="GestureRecgnition.h" />
     <ClInclude Include="Hand.h" />
-    <ClInclude Include="HandEventsHandler.h" />
     <ClInclude Include="HandPoint.h" />
     <ClInclude Include="KinectHelper.h" />
     <ClInclude Include="utils.h" />

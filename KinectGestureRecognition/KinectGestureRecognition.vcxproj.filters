@@ -36,9 +36,6 @@
     <ClCompile Include="Vector.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
-    <ClCompile Include="HandEventsHandler.cpp">
-      <Filter>源文件</Filter>
-    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Hand.h">
@@ -60,9 +57,6 @@
       <Filter>头文件</Filter>
     </ClInclude>
     <ClInclude Include="Vector.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
-    <ClInclude Include="HandEventsHandler.h">
       <Filter>头文件</Filter>
     </ClInclude>
     <ClInclude Include="dllapi.h">

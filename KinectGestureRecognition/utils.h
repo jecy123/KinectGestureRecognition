@@ -19,6 +19,14 @@ static const int cDepthHeight = 424;
 static const float cThreshold = 40;
 static const float depthThreshold = cThreshold / 1000.0;
 
+//手势的各种阈值：
+static const double cFingerTouchZ = -0.65;
+static const double cHandPushZ = -1.0;
+static const double cHandPullZ = 1.0;
+static const double cFistPushZ = -0.7;
+static const double cFistPullZ = 0.7;
+
+
 template<class Interface>
 inline void SafeRealease(Interface * & pInterfaceToRelease)
 {

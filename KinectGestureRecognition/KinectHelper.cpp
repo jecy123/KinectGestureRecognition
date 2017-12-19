@@ -2,7 +2,6 @@
 
 #include "KinectHelper.h"
 #include "utils.h"
-#include "HandEventsHandler.h"
 
 void KinectHelper::Run()
 {
@@ -12,12 +11,26 @@ void KinectHelper::Run()
 	k.deInit();
 }
 
+void KinectHelper::startRefreshData(GestureRecgnition * pRecgnition)
+{
+	m_bRunning = true;
+	this->init();
+	this->setGestureHandler(pRecgnition);
+	this->UpdateFrame();
+	
+}
+
+void KinectHelper::stopRefreshData()
+{
+	m_bRunning = false;
+	this->deInit();
+}
 
 
 HRESULT KinectHelper::UpdateFrame()
 {
 	HRESULT hr = S_OK;
-	while (true)
+	while (m_bRunning)
 	{
 		
 		hr = UpdateDepthData();
@@ -29,13 +42,14 @@ HRESULT KinectHelper::UpdateFrame()
 			m_pCVHelper->show();
 			if (m_pCVHelper->getKeyPressed() == VK_ESCAPE)
 			{
-				break;
+				m_bRunning = false;
 			}
 		}
 
 		if (m_pGestureRecgnition != nullptr)
 		{
-			m_pGestureRecgnition->update(m_pRightHand);
+			m_pGestureRecgnition->refresh(m_pRightHand);
+			//m_pGestureRecgnition->update(m_pRightHand);
 		}
 	}
 	return hr;
@@ -139,17 +153,23 @@ HRESULT KinectHelper::init()
 	m_pCVHelper = new CVHelper;
 	m_pGestureRecgnition = new GestureRecgnition;
 	m_pRightHand = new Hand;
-
-	//m_pEventHandler = new HandEventsHandler;
-	//m_pGestureRecgnition->setGestureEventsHandler(m_pEventHandler);
 	return hr;
 }
 
 
+void KinectHelper::setGestureHandler(GestureRecgnition * pRecgnition)
+{
+	this->m_pGestureRecgnition = pRecgnition;
+}
+
 void KinectHelper::setGestureEventHandler(GestureEventHandler * pEventHandler)
 {
 	this->m_pEventHandler = pEventHandler;
-	m_pGestureRecgnition->setGestureEventsHandler(pEventHandler);
+	if (this->m_pGestureRecgnition == nullptr)
+	{
+		this->m_pGestureRecgnition = new GestureRecgnition;
+	}
+	this->m_pGestureRecgnition->setGestureEventsHandler(pEventHandler);
 }
 
 HRESULT KinectHelper::initBody()
@@ -235,6 +255,8 @@ KinectHelper::KinectHelper()
 	m_pDepthArray = nullptr;
 	m_pCVHelper = nullptr;
 	m_pEventHandler = nullptr;
+
+	m_bRunning = false;
 }
 
 
