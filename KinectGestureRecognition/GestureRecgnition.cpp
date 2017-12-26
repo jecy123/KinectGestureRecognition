@@ -3,18 +3,25 @@
 #include "GestureRecgnition.h"
 #include "utils.h"
 
+#define PI       3.14159265358979323846
 
 GestureRecgnition::GestureRecgnition()
 {
-	hand = nullptr;
+	leftHand = rightHand = nullptr;
 	eventHandler = nullptr;
 	isTickCountStart = false;
 	m_lastType = m_type = TYPE_UNKNOWN;
 	isfirstGetGesture = false;
+
+	args = new GestureArgs;
+
+	file.open("D:\\data.txt");
 }
 
 GestureRecgnition::~GestureRecgnition()
 {
+	delete args;
+	file.close();
 }
 
 
@@ -170,13 +177,14 @@ void GestureRecgnition::recgnition()
 	}
 }
 
-void GestureRecgnition::refresh(Hand * hand)
+void GestureRecgnition::refresh(Hand * leftHand, Hand * rightHand)
 {
-	this->hand = hand;
+	this->rightHand = rightHand;
+	this->leftHand = leftHand;
 	m_lastType = m_type;
 	if (isfirstGetGesture == true)
 	{
-		if (hand->m_handState == HandState_NotTracked || hand->m_handState == HandState_Unknown)
+		if (rightHand->m_handState == HandState_NotTracked || rightHand->m_handState == HandState_Unknown)
 		{
 			m_type = TYPE_UNKNOWN;
 
@@ -184,42 +192,46 @@ void GestureRecgnition::refresh(Hand * hand)
 			lastTime = 0;
 			currentTime = 0;
 
+			args->reset();
 			lastArgs.reset();
 			currentArgs.reset();
 		}
 		else{
-			changeState(hand);
+			changeState();
 		}
 	}
 	else
 	{
-		if (hand->m_handState == HandState_Open)
+		if (rightHand->m_handState == HandState_Open)
 		{
 			isfirstGetGesture = true;
 			m_type = TYPE_OPEN;
 			lastTime = 0;
 			currentTime = 0;
 
+			args->reset();
 			lastArgs.reset();
 			currentArgs.reset();
 		}
-		else if (hand->m_handState == HandState_Closed)
+		else if (rightHand->m_handState == HandState_Closed)
 		{
 			isfirstGetGesture = true;
 			m_type = TYPE_HOLD;
 			lastTime = 0;
 			currentTime = 0;
 
+			args->reset();
 			lastArgs.reset();
 			currentArgs.reset();
 		}
-		else if (hand->m_handState == HandState_Lasso)
+		else if (rightHand->m_handState == HandState_Lasso)
 		{
 			isfirstGetGesture = true;
 			m_type = TYPE_ONE_FINGER;
 			lastTime = 0;
 			currentTime = 0;
 
+			args->reset();
 			lastArgs.reset();
 			currentArgs.reset();
 		}
@@ -229,14 +241,14 @@ void GestureRecgnition::refresh(Hand * hand)
 	} 
 }
 
-void GestureRecgnition::changeState(Hand * hand)
+void GestureRecgnition::changeState()
 {
 	tickUp();
-	gotoXY(0, 6);
+	gotoXY(0, 4);
 
-	cout << "x = " << currentArgs.x << "          " << endl;
-	cout << "y = " << currentArgs.y << "          " << endl;
-	cout << "z = " << currentArgs.z << "          " << endl;
+	cout << "x = " << currentArgs.x << "    tipX = " << currentArgs.tipX << endl;
+	cout << "y = " << currentArgs.y << "    tipY = " << currentArgs.tipY << endl;
+	cout << "z = " << currentArgs.z << "    tipZ = " << currentArgs.tipZ << endl;
 
 	cout << "vx = " << currentArgs.vx << "          " << endl;
 	cout << "vy = " << currentArgs.vy << "          " << endl;
@@ -244,12 +256,28 @@ void GestureRecgnition::changeState(Hand * hand)
 
 	//gotoXY(0, 13);
 	cout << "retain time = " << currentArgs.retainTime << "    " << endl;
+	cout << "zoom time = " << currentArgs.zoomTime << "    " << endl;
 	cout << "isRetain = " << currentArgs.isRetain << endl;
 	cout << "isSwip = " << currentArgs.isSwip << endl;
+	//cout << "zoomArgs = " << currentArgs.zoomArgs.a <<"                "<< endl;
+	//cout << "curvity = " << currentArgs.curvity << "    " << endl;
+	//cout << "disCenterTip = " << currentArgs.disCenterTip << "    " << endl;
+	/*if (currentArgs.zoomTime != 0)
+	{
+		file << setw(6) << currentArgs.zoomTime << setw(10) << currentArgs.curvity << endl;
+
+	}
+	else{
+		file << endl;
+	}*/
 	if (m_type == TYPE_OPEN)
 	{
-		gotoXY(0, 15);
+		gotoXY(0, 17);
 		cout << "OPEN             ";
+		if (currentArgs.isZoom)
+		{
+			m_type = TYPE_ZOOM;
+		}
 		if (currentArgs.isRetain)
 		{
 			m_type = TYPE_OPEN_RETAIN;
@@ -260,19 +288,25 @@ void GestureRecgnition::changeState(Hand * hand)
 
 			m_type = TYPE_OPEN_SWIP;
 		}
-		else if (this->hand->m_handState == HandState_Closed)
+		else if (this->rightHand->m_handState == HandState_Closed)
 		{
 			m_type = TYPE_GRAB;
 		}
 		else
 		{
-			m_type = TYPE_OPEN_MOVE;
+			if (currentArgs.isMove){
+				m_type = TYPE_OPEN_MOVE;
+			}
 		}
 	}
 	if (m_type == TYPE_OPEN_MOVE)
 	{
-		gotoXY(0, 15);
-		cout << "MOVE         ";
+		gotoXY(0, 17);
+		cout << "MOVE         "; 
+		if (currentArgs.isZoom)
+		{
+			m_type = TYPE_ZOOM;
+		}
 		if (currentArgs.retainTime >= 100)
 		{
 			m_type = TYPE_OPEN;
@@ -284,8 +318,13 @@ void GestureRecgnition::changeState(Hand * hand)
 	}
 	if (m_type == TYPE_OPEN_RETAIN)
 	{
-		gotoXY(0, 15);
+		gotoXY(0, 17);
 		cout << "RETAIN        ";
+		if (currentArgs.isZoom)
+		{
+			m_type = TYPE_ZOOM;
+		}
+
 		if (currentArgs.isSwip)
 		{
 			m_type = TYPE_OPEN_SWIP;
@@ -307,31 +346,60 @@ void GestureRecgnition::changeState(Hand * hand)
 	}
 	if (m_type == TYPE_OPEN_SWIP)
 	{
-		gotoXY(0, 15);
+		gotoXY(0, 17);
 		cout << "SWIP            ";
-		if (currentArgs.retainTime >= 50)
+		if (!currentArgs.isSwip)
 		{
 			m_type = TYPE_OPEN;
+		}
+		if (currentArgs.isMove)
+		{
+			m_type = TYPE_OPEN_MOVE;
 		}
 	}
 	if (m_type == TYPE_GRAB)
 	{
-		gotoXY(0, 15);
+		gotoXY(0, 17);
 		cout << "GRAB              ";
+		if (currentArgs.isMove)
+		{
+			m_type = TYPE_HOLD_MOVE;
+		}
+		else if (currentArgs.isSwip)
+		{
+			m_type = TYPE_DRAG;
+		}
 	}
 	if (m_type == TYPE_OPEN_CLICK)
 	{
-		gotoXY(0, 15);
-		cout << "             CLICK            ";
+		gotoXY(0, 17);
+		cout << "         CLICK            ";
 		if (currentArgs.retainTime >= 50)
 			m_type = TYPE_OPEN; 
 	}
 	if (m_type == TYPE_OPEN_RETAIN_MOVE)
 	{
 
-		gotoXY(0, 15);
+		gotoXY(0, 17);
 		cout << "RETAIN MOVE              ";
-		if (currentArgs.retainTime >= 250)
+		if (currentArgs.retainTime >= 400)
+		{
+			m_type = TYPE_OPEN;
+		}
+	}
+	if (m_type == TYPE_ZOOM)
+	{
+
+		gotoXY(0, 17);
+		if (currentArgs.zoomArgs.a > 0)
+		{
+			cout << "ZOOM IN              ";
+		}
+		else{
+			cout << "ZOOM OUT             ";
+		}
+
+		if (!currentArgs.isZoom)
 		{
 			m_type = TYPE_OPEN;
 		}
@@ -342,7 +410,7 @@ void GestureRecgnition::changeState(Hand * hand)
 void GestureRecgnition::update(Hand * hand)
 {
 	string s;
-	this->hand = hand;
+	this->rightHand = hand;
 	//先记录一下更新状态之前的m_type
 	m_lastType = m_type;
 	switch (hand->m_handState)
@@ -401,6 +469,7 @@ void GestureRecgnition::resetTimer()
 		lastTime = 0;
 		currentTime = 0;
 
+		args->reset();
 		lastArgs.reset();
 		currentArgs.reset();
 
@@ -415,6 +484,7 @@ void GestureRecgnition::startTimer()
 		lastTime = 0;
 		currentTime = 0;
 
+		args->reset();
 		lastArgs.reset();
 		currentArgs.reset();
 		isTickCountStart = true;
@@ -430,21 +500,21 @@ void GestureRecgnition::startTick()
 
 	lastArgs = currentArgs;
 
-	if (hand != nullptr)
+	if (rightHand != nullptr)
 	{
 		if (m_type == TYPE_ONE_FINGER || m_type == TYPE_ONE_FINGER_RETAIN)
 		{
 
 			currentArgs.setXYZ(
-				hand->HandTip.m_depthX,
-				hand->HandTip.m_depthY,
-				hand->HandTip.m_cameraZ * 1000);
+				rightHand->FingerTip.m_depthX,
+				rightHand->FingerTip.m_depthY,
+				rightHand->FingerTip.m_cameraZ * 1000);
 		}
 		else{
 			currentArgs.setXYZ(
-				hand->HandCenter.m_depthX,
-				hand->HandCenter.m_depthY,
-				hand->HandCenter.m_cameraZ * 1000);
+				rightHand->HandCenter.m_depthX,
+				rightHand->HandCenter.m_depthY,
+				rightHand->HandCenter.m_cameraZ * 1000);
 		}
 	}
 }
@@ -455,44 +525,76 @@ void GestureRecgnition::tickUp()
 	lastTime = currentTime;
 	currentTime = getTickCounts();
 
-	lastArgs = currentArgs;
+	//lastArgs = currentArgs;
 
-	if (hand != nullptr)
+	if (rightHand != nullptr)
 	{
 		if (m_type == TYPE_ONE_FINGER || m_type == TYPE_ONE_FINGER_RETAIN)
 		{
+			args->setXYZ(
+				leftHand->HandTip.m_depthX,
+				leftHand->HandTip.m_depthY,
+				leftHand->HandTip.m_cameraZ * 1000,
+				rightHand->HandTip.m_depthX,
+				rightHand->HandTip.m_depthY,
+				rightHand->HandTip.m_cameraZ * 1000, currentTime);
 
-			currentArgs.setXYZ(
-				hand->HandTip.m_depthX,
-				hand->HandTip.m_depthY,
-				hand->HandTip.m_cameraZ * 1000);
+			/*currentArgs.setXYZ(
+				rightHand->HandTip.m_depthX,
+				rightHand->HandTip.m_depthY,
+				rightHand->HandTip.m_cameraZ * 1000, currentTime);*/
 		}
 		else{
-			currentArgs.setXYZ(
-				hand->HandCenter.m_depthX,
-				hand->HandCenter.m_depthY,
-				hand->HandCenter.m_cameraZ * 1000);
+
+			args->setXYZ(
+				leftHand->HandCenter.m_depthX,
+				leftHand->HandCenter.m_depthY,
+				leftHand->HandCenter.m_cameraZ * 1000,
+				rightHand->HandCenter.m_depthX,
+				rightHand->HandCenter.m_depthY,
+				rightHand->HandCenter.m_cameraZ * 1000, currentTime);
+
+			args->setTipXYZ(
+				leftHand->HandTip.m_depthX,
+				leftHand->HandTip.m_depthY,
+				leftHand->HandTip.m_cameraZ * 1000,
+				rightHand->HandTip.m_depthX,
+				rightHand->HandTip.m_depthY,
+				rightHand->HandTip.m_cameraZ * 1000);
+			args->calculateCurvity();
+
+			//currentArgs.setXYZ(
+			//	rightHand->HandCenter.m_depthX,
+			//	rightHand->HandCenter.m_depthY,
+			//	rightHand->HandCenter.m_cameraZ * 1000);
+
+			//currentArgs.setTipXYZ(
+			//	rightHand->HandTip.m_depthX,
+			//	rightHand->HandTip.m_depthY,
+			//	rightHand->HandTip.m_cameraZ * 1000);
+			//currentArgs.calculateCurvity(currentTime);
+			//currentArgs.setCos(HandPoint::cosin3d(hand->HandCenter, hand->HandWrist, hand->HandTip));
 		}
 	}
 
-	if (currentTime != lastTime)
-	{
-		bool isStarted = lastArgs.x != 0 && lastArgs.y != 0 && lastArgs.z != 0;
-		if (isStarted)
-		{
-			ULONG timeInterval = currentTime - lastTime;
+	//if (currentTime != lastTime)
+	//{
+	//	bool isStarted = lastArgs.x != 0 && lastArgs.y != 0 && lastArgs.z != 0;
+	//	if (isStarted)
+	//	{
+	//		ULONG timeInterval = currentTime - lastTime;
 
-			int dx = currentArgs.x - lastArgs.x;
-			int dy = currentArgs.y - lastArgs.y;
-			int dz = currentArgs.z - lastArgs.z;
-			currentArgs.setDxDyDz(dx, dy, dz, timeInterval);
+	//		int dx = currentArgs.x - lastArgs.x;
+	//		int dy = currentArgs.y - lastArgs.y;
+	//		int dz = currentArgs.z - lastArgs.z;
+	//		currentArgs.setDxDyDz(dx, dy, dz, timeInterval);
 
-			double interval = (double)timeInterval;
-			double vx = dx / interval * 100;
-			double vy = dy / interval * 100;
-			double vz = dz / interval * 100;
+	//		double interval = (double)timeInterval;
+	//		double vx = dx / interval * 100;
+	//		double vy = dy / interval * 100;
+	//		double vz = dz / interval * 100;
 
-			currentArgs.setVxVyVz(vx, vy, vz);
-		}
-	}
+	//		currentArgs.setVxVyVz(vx, vy, vz);
+	//	}
+	//}
 }

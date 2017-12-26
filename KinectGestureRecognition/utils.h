@@ -10,6 +10,7 @@
 #include <algorithm>
 #include <cmath>
 #include <chrono>
+#include <vector>
 
 using namespace cv;
 using namespace std;
@@ -25,6 +26,7 @@ static const double cHandPushZ = -1.0;
 static const double cHandPullZ = 1.0;
 static const double cFistPushZ = -0.7;
 static const double cFistPullZ = 0.7;
+
 
 
 template<class Interface>
@@ -56,6 +58,4 @@ inline void setCursor(int x, int y, float vx = 0.0, float vy = 0.0)
 
 	SetCursorPos(x * 5, y * 5);
 }
-
-
 

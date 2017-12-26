@@ -37,6 +37,7 @@ public:
 	//void refreshHandAreaArray();
 	HandPoint	HandCenter;
 	HandPoint	HandWrist;
+	HandPoint	FingerTip;
 	HandPoint	HandTip;
 	HandPoint	HandThumb;
 

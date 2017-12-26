@@ -6,31 +6,11 @@
 
 HandPoint cMaxYhandPoint;
 
-//三个点构成的两个向量的叉乘(p0p1 × p0p2)
-inline int crossProduct(HandPoint & p0, HandPoint & p1, HandPoint & p2)
-{
-	return (p1.m_depthX - p0.m_depthX) * (p2.m_depthY - p0.m_depthY) - (p2.m_depthX - p0.m_depthX) * (p1.m_depthY - p0.m_depthY);
-}
-
-//三个点构成的两个向量的点乘(p0p1 · asda )
-inline int dotProduct(HandPoint & p0, HandPoint & p1, HandPoint & p2)
-{
-	return (p1.m_depthX - p0.m_depthX) * (p2.m_depthX - p0.m_depthX) + (p1.m_depthY - p0.m_depthY) * (p2.m_depthY - p0.m_depthY);
-}
-
-inline float cosin(HandPoint & p0, HandPoint & p1, HandPoint & p2)
-{
-	float dot = dotProduct(p0, p1, p2);
-	float dis10 = HandPoint::disBtw2Points(p0, p1);
-	float dis20 = HandPoint::disBtw2Points(p0, p2);
-	return dot / (dis10 * dis20);
-}
-
 
 inline bool cmp(HandPoint p1, HandPoint p2)
 {
 
-	int ret = crossProduct(cMaxYhandPoint, p1, p2);
+	int ret = HandPoint::crossProduct(cMaxYhandPoint, p1, p2);
 	if (ret < 0)
 		return true;
 	if (ret > 0)
@@ -199,9 +179,13 @@ void Hand::refreshHandData(ICoordinateMapper * mapper, Joint joints[JointType_Co
 	}
 
 	this->HandCenter = HandPoint::getHandPoint(mapper, pointCenter);
-	this->HandWrist	= HandPoint::getHandPoint(mapper, pointWrist);
+	//this->HandWrist	= HandPoint::getHandPoint(mapper, pointWrist);
 	this->HandTip = HandPoint::getHandPoint(mapper, pointTip);
 	this->HandThumb = HandPoint::getHandPoint(mapper, pointThumb);
+
+	this->HandWrist.m_cameraZ = this->HandCenter.m_cameraZ;
+	this->HandWrist.m_depthX = this->HandCenter.m_depthX;
+	this->HandWrist.m_depthY = this->HandCenter.m_depthY + 20;
 
 	//mapper->MapDepthFrameToCameraSpace(cDepthHeight * cDepthWidth, depthArray, cDepthHeight*cDepthWidth, m_points);
 
@@ -209,13 +193,14 @@ void Hand::refreshHandData(ICoordinateMapper * mapper, Joint joints[JointType_Co
 	getHandArea(mapper, depthArray);
 	getHandOutline(mapper, depthArray);
 	
+	//
 	float longestDis = 0;
 	for (int i = 0; i < HandOutline.size(); i++)
 	{
 		if (longestDis < HandOutline[i].m_disFromCenter && HandOutline[i].m_depthY < HandCenter.m_depthY)
 		{
 			longestDis = HandOutline[i].m_disFromCenter;
-			HandTip = HandOutline[i];
+			this->FingerTip = HandOutline[i];
 		}
 	}
 	//checkFingerPoint();
@@ -389,8 +374,8 @@ void Hand::checkFingerPoint()
 		bool isSharpPoint = dis2 > dis1 && dis2 > dis3;*/
 
 		bool isAboveCenter = HandOutline[i].m_depthY < HandWrist.m_depthY;
-		bool isAcuteAngle = cosin(HandOutline[i], HandOutline[i - k], HandOutline[i + k]) >= 0.5;
-		bool isFinger = crossProduct(HandOutline[i], HandOutline[i - k], HandOutline[i + k]) > 20;
+		bool isAcuteAngle = HandPoint::cosin(HandOutline[i], HandOutline[i - k], HandOutline[i + k]) >= 0.5;
+		bool isFinger = HandPoint::crossProduct(HandOutline[i], HandOutline[i - k], HandOutline[i + k]) > 20;
 
 		if (isAboveCenter && isAcuteAngle && isFinger)
 		{

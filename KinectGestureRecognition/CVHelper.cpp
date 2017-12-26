@@ -63,8 +63,48 @@ void CVHelper::draw(UINT16 * depthData, Hand * leftHand, Hand * rightHand)
 	m_image.setTo(0);
 	uchar * imgData = (uchar *)m_image.data;
 
-	drawHand(imgData, leftHand);
-	drawHand(imgData, rightHand);
+
+	if (leftHand != nullptr || rightHand != nullptr)
+	{
+		int k = 0;
+		int l = 0;
+
+		for (int i = 0; i < cDepthHeight; i++)
+		{
+			for (int j = 0; j < cDepthWidth; j++)
+			{
+
+				imgData[k] = 0;
+				imgData[k + 1] = 0;
+				imgData[k + 2] = 0;
+
+				if (leftHand != nullptr && leftHand->m_pHandAreaArray[i][j])
+				{
+					imgData[k] = 255;
+					imgData[k + 1] = 255;
+					imgData[k + 2] = 255;
+				}
+				if (rightHand != nullptr && rightHand->m_pHandAreaArray[i][j])
+				{
+					imgData[k] = 255;
+					imgData[k + 1] = 255;
+					imgData[k + 2] = 255;
+				}
+				k += 3;
+			}
+		}
+
+		//drawPoint(leftHand->HandTip, cvScalar(0, 0, 255), 5);
+		
+		drawPoint(rightHand->HandTip, cvScalar(0, 0, 255), 5);
+		drawPoint(rightHand->HandCenter, cvScalar(0, 255, 0), 5);
+		//drawPoint(rightHand->FingerTip, cvScalar(0, 255, 255), 5);
+		drawPoint(rightHand->HandThumb, cvScalar(255, 0, 0), 5);
+		//drawPoint(rightHand->HandWrist, cvScalar(255, 255, 0), 5);
+	}
+
+	//drawHand(imgData, leftHand);
+	//drawHand(imgData, rightHand);
 	//if (depthData != nullptr)
 	//{
 

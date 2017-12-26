@@ -150,6 +150,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="CVHelper.cpp" />
+    <ClCompile Include="GestureArgs.cpp" />
     <ClCompile Include="GestureRecgnition.cpp" />
     <ClCompile Include="Hand.cpp" />
     <ClCompile Include="HandPoint.cpp" />
@@ -160,6 +161,7 @@
   <ItemGroup>
     <ClInclude Include="CVHelper.h" />
     <ClInclude Include="dllapi.h" />
+    <ClInclude Include="GestureArgs.h" />
     <ClInclude Include="GestureRecgnition.h" />
     <ClInclude Include="Hand.h" />
     <ClInclude Include="HandPoint.h" />
