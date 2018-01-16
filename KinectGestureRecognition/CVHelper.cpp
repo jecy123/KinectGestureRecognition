@@ -96,9 +96,18 @@ void CVHelper::draw(UINT16 * depthData, Hand * leftHand, Hand * rightHand)
 
 		//drawPoint(leftHand->HandTip, cvScalar(0, 0, 255), 5);
 		
+		if (rightHand->m_handState == HandState_Closed)
+		{
+			drawPoint(rightHand->HandCenter, cvScalar(0, 0, 255), 30);
+		}
+		if (leftHand->m_handState == HandState_Closed)
+		{
+			drawPoint(leftHand->HandCenter, cvScalar(0, 0, 255), 30);
+		}
+			
 		drawPoint(rightHand->HandTip, cvScalar(0, 0, 255), 5);
 		drawPoint(rightHand->HandCenter, cvScalar(0, 255, 0), 5);
-		//drawPoint(rightHand->FingerTip, cvScalar(0, 255, 255), 5);
+		drawPoint(rightHand->FingerTip, cvScalar(255, 255, 0), 15);
 		drawPoint(rightHand->HandThumb, cvScalar(255, 0, 0), 5);
 		//drawPoint(rightHand->HandWrist, cvScalar(255, 255, 0), 5);
 	}

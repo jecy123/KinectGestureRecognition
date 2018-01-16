@@ -2,6 +2,10 @@
 #include <Kinect.h>
 #include "dllapi.h"
 
+
+
+#define PI       3.14159265358979323846
+
 class DLL_API HandPoint
 {
 public:
@@ -17,6 +21,12 @@ public:
 	static float disBtw2Points3d(HandPoint & p1, HandPoint & p2);
 	static float disBtw2Points(HandPoint & p1, HandPoint & p2);
 	static float disBtw2Points(int x1, int y1, int x2, int y2);
+
+	static float slopeBtw2Points(int x1, int y1, int x2, int y2);
+	static float slopeBtw2Points(HandPoint & p1, HandPoint & p2);
+
+	//两点形成的直线与y轴正方向（深度图中y轴正方向是屏幕下方向）形成的夹角
+	static float angleBtw2Points(int x1, int y1, int x2, int y2, float distance);
 	
 	static HandPoint & getHandPoint(ICoordinateMapper * mapper, CameraSpacePoint jointPoint);
 	

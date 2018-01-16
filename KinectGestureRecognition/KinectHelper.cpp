@@ -48,7 +48,7 @@ HRESULT KinectHelper::UpdateFrame()
 
 		if (m_pGestureRecgnition != nullptr)
 		{
-			m_pGestureRecgnition->refresh(m_pRightHand);
+			m_pGestureRecgnition->refresh(m_pLeftHand, m_pRightHand);
 			//m_pGestureRecgnition->update(m_pRightHand);
 		}
 	}
@@ -167,15 +167,15 @@ void KinectHelper::setGestureHandler(GestureRecgnition * pRecgnition)
 	this->m_pGestureRecgnition = pRecgnition;
 }
 
-void KinectHelper::setGestureEventHandler(GestureEventHandler * pEventHandler)
-{
-	this->m_pEventHandler = pEventHandler;
-	if (this->m_pGestureRecgnition == nullptr)
-	{
-		this->m_pGestureRecgnition = new GestureRecgnition;
-	}
-	this->m_pGestureRecgnition->setGestureEventsHandler(pEventHandler);
-}
+//void KinectHelper::setGestureEventHandler(GestureEventHandler * pEventHandler)
+//{
+//	this->m_pEventHandler = pEventHandler;
+//	if (this->m_pGestureRecgnition == nullptr)
+//	{
+//		this->m_pGestureRecgnition = new GestureRecgnition;
+//	}
+//	this->m_pGestureRecgnition->setGestureEventsHandler(pEventHandler);
+//}
 
 HRESULT KinectHelper::initBody()
 {
@@ -249,10 +249,10 @@ void KinectHelper::deInit()
 		delete m_pGestureRecgnition;
 	}
 
-	if (m_pEventHandler != nullptr)
-	{
-		delete m_pEventHandler;
-	}
+	//if (m_pEventHandler != nullptr)
+	//{
+	//	delete m_pEventHandler;
+	//}
 }
 
 KinectHelper::KinectHelper()
@@ -264,7 +264,7 @@ KinectHelper::KinectHelper()
 	m_pRightHand = nullptr;
 	m_pDepthArray = nullptr;
 	m_pCVHelper = nullptr;
-	m_pEventHandler = nullptr;
+	//m_pEventHandler = nullptr;
 
 	m_bRunning = false;
 }

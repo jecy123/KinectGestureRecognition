@@ -8,22 +8,22 @@
 using namespace std;
 
 //手势识别的接口类
-class DLL_API GestureEventHandler
-{
-public:
-	GestureEventHandler(){}
-	virtual ~GestureEventHandler(){}
-	virtual void onOneFingerMove(HandArgs * args){}
-	virtual void onOneFingerTouch(HandArgs * args){}
-	virtual void onHandMove(HandArgs * args){}
-	virtual void onHandPush(HandArgs * args){}
-	virtual void onHandPull(HandArgs * args){}
-	virtual void onHandHoldMove(HandArgs * args){}
-	virtual void onHandHoldPush(HandArgs * args){}
-	virtual void onHandHoldPull(HandArgs * args){}
-	virtual void onHandGrab(HandArgs * args){}
-	virtual void onHandRelease(HandArgs * args){}
-};
+//class DLL_API GestureEventHandler
+//{
+//public:
+//	GestureEventHandler(){}
+//	virtual ~GestureEventHandler(){}
+//	virtual void onOneFingerMove(HandArgs * args){}
+//	virtual void onOneFingerTouch(HandArgs * args){}
+//	virtual void onHandMove(HandArgs * args){}
+//	virtual void onHandPush(HandArgs * args){}
+//	virtual void onHandPull(HandArgs * args){}
+//	virtual void onHandHoldMove(HandArgs * args){}
+//	virtual void onHandHoldPush(HandArgs * args){}
+//	virtual void onHandHoldPull(HandArgs * args){}
+//	virtual void onHandGrab(HandArgs * args){}
+//	virtual void onHandRelease(HandArgs * args){}
+//};
 
 enum DLL_API GestureType
 {
@@ -41,7 +41,11 @@ enum DLL_API GestureType
 	TYPE_GRAB,
 	TYPE_RELEASE,
 	TYPE_DRAG,
-	TYPE_ZOOM
+	TYPE_ZOOM,
+	TYPE_ZOOM_IN,
+	TYPE_ZOOM_OUT,
+	TYPE_ROTATE_CW,
+	TYPE_ROTATE_CCW
 };
 
 class DLL_API GestureRecgnition
@@ -50,33 +54,54 @@ public:
 	GestureRecgnition();
 	~GestureRecgnition();
 
+	void setOutput(bool isInfoOutput);
+
 	void start(Hand * hand);
 	void refresh(Hand * leftHand, Hand * rightHand);
-	void update(Hand * hand);
+	
+	//void update(Hand * hand);
 	void changeState();
 
 	void tickUp();
 
+
 	void recgnition();
 	GestureType getType();
 
-	void setGestureEventsHandler(GestureEventHandler * handler);
+	//void setGestureEventsHandler(GestureEventHandler * handler);
 	void setType(GestureType type);
-	virtual void onFingerMove(HandArgs * args){}
-	virtual void onFingerTouch(HandArgs * args){}
+	virtual void onFingerMove(GestureArgs * args){}
+	virtual void onFingerTouch(GestureArgs * args){}
 
-	virtual void onGrab(HandArgs * args){}
-	virtual void onRelease(HandArgs * args){}
+	virtual void onGrab(GestureArgs * args){}
+	virtual void onRelease(GestureArgs * args){}
 	
-	virtual void onHandMove(HandArgs * args){}
-	virtual void onHandPush(HandArgs * args){}
-	virtual void onHandPull(HandArgs * args){}
+	virtual void onBeginZoom(GestureArgs * args){}
+	virtual void onZoomIn(GestureArgs * args){}
+	virtual void onZoomOut(GestureArgs * args){}
+	virtual void onRotateCW(GestureArgs * args){}
+	virtual void onRotateCCW(GestureArgs * args){}
+	virtual void onRotateEnd(GestureArgs * args){}
+	virtual void onEndZoom(GestureArgs * args){}
+
+	virtual void onTouched(GestureArgs * args){}
+	virtual void onTouchMove(GestureArgs * args){}
+	virtual void onClicked(GestureArgs * args){}
+
+	virtual void onPageTurning(GestureArgs * args){}
 	
-	virtual void onFistMove(HandArgs * args){}
-	virtual void onFistPush(HandArgs * args){}
-	virtual void onFistPull(HandArgs * args){}
+	virtual void onHandMove(GestureArgs * args){}
+	virtual void onHandPush(GestureArgs * args){}
+	virtual void onHandPull(GestureArgs * args){}
+	virtual void onDrag(GestureArgs * args){}
+
+	
+	virtual void onFistMove(GestureArgs * args){}
+	virtual void onFistPush(GestureArgs * args){}
+	virtual void onFistPull(GestureArgs * args){}
 	
 private:
+	bool isZoomCanceled();
 	bool isfirstGetGesture;
 
 	ofstream file;
@@ -84,16 +109,11 @@ private:
 	GestureType m_type;
 	GestureType m_lastType;
 
-	GestureEventHandler * eventHandler;
+	//GestureEventHandler * eventHandler;
 	Hand * rightHand;
 	Hand * leftHand;
 	ULONG currentTime;
 	ULONG lastTime;
-
-
-	
-	HandArgs currentArgs;
-	HandArgs lastArgs;
 
 	GestureArgs * args;
 
@@ -101,9 +121,6 @@ private:
 	int endX, endY, endZ;
 	double time;
 	bool isTickCountStart;
-	void resetTimer();
-	void startTimer();
-	void startTick();
-	void doGestureEvent();
+	bool isInfoOutput;
 };
 

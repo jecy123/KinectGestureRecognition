@@ -93,6 +93,48 @@ float HandPoint::disBtw2Points(HandPoint & p1, HandPoint &  p2)
 	return disBtw2Points(p1.m_depthX, p1.m_depthY, p2.m_depthX, p2.m_depthY);
 }
 
+
+//静态方法：
+//计算两个手掌指尖点之间的斜率
+float HandPoint::slopeBtw2Points(int x1, int y1, int x2, int y2)
+{
+	if (x1 == x2)
+	{
+		if (y1 > y2)
+			return FLT_MAX;
+		else if (y1 == y2)
+			return 0;
+		else
+			return FLT_MIN;
+	}
+	float dx = x1 - x2;
+	float dy = y1 - y2;
+	return dy / dx;
+}
+//静态方法：
+//计算两个手掌指尖点之间的斜率
+float HandPoint::slopeBtw2Points(HandPoint & p1, HandPoint & p2)
+{
+	return slopeBtw2Points(p1.m_depthX, p1.m_depthY, p2.m_depthX, p2.m_depthY);
+}
+
+//静态方法
+//两点形成的直线与y轴正方向（深度图中y轴正方向是屏幕下方向）形成的夹角
+float HandPoint::angleBtw2Points(int x1, int y1, int x2, int y2, float distance)
+{
+	float dx = x2 - x1;
+	float sinValue = dx / distance;
+	float angle = asinf(sinValue) * 180.0 / PI;
+		
+	//钝角
+	if (y2 > y1)
+	{
+		angle = 180 - angle;
+	}
+
+	return angle;
+}
+
 //静态方法：
 //计算三个手掌指尖点之间的夹角的cosin
 float HandPoint::cosin(HandPoint & p0, HandPoint & p1, HandPoint & p2)

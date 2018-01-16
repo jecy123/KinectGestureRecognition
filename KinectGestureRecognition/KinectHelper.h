@@ -12,7 +12,6 @@ public:
 	KinectHelper();
 	virtual ~KinectHelper();
 
-	void setGestureEventHandler(GestureEventHandler * pEventHandler);
 	void setGestureHandler(GestureRecgnition * pRecgnition);
 
 	static void Run();
@@ -21,7 +20,6 @@ public:
 	void	startRefreshData(GestureRecgnition * pRecgnition = nullptr);
 	void	stopRefreshData();
 	HRESULT UpdateFrame();
-	GestureEventHandler * m_pEventHandler;
 	
 private:
 	HRESULT initDepth();
